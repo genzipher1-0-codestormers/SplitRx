@@ -29,6 +29,8 @@ async function fixAuditIntegrity() {
 
     try {
         await client.query('BEGIN');
+        // Lock the table exclusively to prevent ANY concurrent reads/writes while we fix the chain
+        await client.query('LOCK TABLE audit_log IN ACCESS EXCLUSIVE MODE');
 
         // Fetch all logs ordered by time
         const result = await client.query(
