@@ -44,14 +44,14 @@ export default function WritePrescription() {
 
         try {
             const response = await prescriptionAPI.create({
-                patientId,
+                patient_id: patientId,
                 diagnosis,
                 notes,
-                expiresInDays,
+                expires_in_days: expiresInDays,
                 medications
             });
 
-            setResult(response.data);
+            setResult(response.data.prescription || response.data);
             toast.success('✅ Prescription created and digitally signed!');
 
             // Reset form
@@ -184,7 +184,7 @@ export default function WritePrescription() {
                 <div className="mt-6 bg-green-900/30 border border-green-700 p-4 rounded text-green-100">
                     <h3 className="text-xl font-bold mb-2">✅ Prescription Created</h3>
                     <p><strong>ID:</strong> {result.id}</p>
-                    <p><strong>Content Hash:</strong> <code className="bg-black/30 px-1 rounded">{result.contentHash}</code></p>
+                    <p><strong>Content Hash:</strong> <code className="bg-black/30 px-1 rounded">{result.payloadHash || result.contentHash}</code></p>
                     <p><strong>Status:</strong> {result.status}</p>
                     <p><strong>Expires:</strong> {new Date(result.expiresAt).toLocaleDateString()}</p>
                     <p className="mt-2 text-sm text-green-300 italic">
