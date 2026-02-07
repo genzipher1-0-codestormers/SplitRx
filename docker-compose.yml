@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # Database Service
@@ -6,6 +6,10 @@ services:
     image: postgres:15-alpine
     container_name: splitrx_db
     restart: always
+    environment:
+      POSTGRES_USER: splitrx_admin
+      POSTGRES_PASSWORD: Summ3r!2025_Secur3
+      POSTGRES_DB: splitrx
     env_file:
       - ./backend/.env
     ports:
