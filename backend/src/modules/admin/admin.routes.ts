@@ -47,7 +47,12 @@ router.post(
             const passwordHash = await HashingService.hashPassword(newPassword);
 
             await pool.query(
-                `UPDATE users SET password_hash = $1 WHERE id = $2`,
+                `UPDATE users SET 
+                    password_hash = $1, 
+                    public_key = NULL, 
+                    private_key_encrypted = NULL,
+                    updated_at = NOW()
+                 WHERE id = $2`,
                 [passwordHash, userId]
             );
 

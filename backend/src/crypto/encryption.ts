@@ -14,14 +14,20 @@ export class EncryptionService {
 
     constructor() {
         const key = process.env.ENCRYPTION_MASTER_KEY;
+        const salt = process.env.ENCRYPTION_SALT;
+
         if (!key) {
             throw new Error('ENCRYPTION_MASTER_KEY environment variable is required (minimum 32 characters)');
         }
+        if (!salt) {
+            throw new Error('ENCRYPTION_SALT environment variable is required (minimum 16 characters)');
+        }
+
         if (key.length < 32) {
             throw new Error('ENCRYPTION_MASTER_KEY must be at least 32 characters');
         } else {
-            // Derive a proper 32-byte key from the master key
-            this.masterKey = crypto.scryptSync(key, 'splitrx-salt', 32);
+            // Derive a proper 32-byte key from the master key using the configured salt
+            this.masterKey = crypto.scryptSync(key, salt, 32);
         }
     }
 
