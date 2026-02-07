@@ -1,11 +1,77 @@
+# =====================
+# SplitRx .gitignore
+# =====================
 
-node_modules
-.DS_Store
+# === Dependencies ===
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# === Environment & Secrets ===
 .env
 .env.*
 !.env.example
+.env.local
+.env.*.local
+.env.production
+*.pem
+ca-certificate.crt
 env
 backend/env
-.vscode
-.idea
+
+# === Build Outputs ===
+dist/
+build/
+.next/
+out/
+
+# === IDE & Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+*.bak
+
+# === Logs ===
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+logs/
+
+# === Testing ===
+coverage/
+.nyc_output/
+
+# === TypeScript ===
+*.tsbuildinfo
+
+# === Archives & Binaries ===
+*.tar.gz
+*.zip
+*.rar
+
+# === Deployment Artifacts ===
+splitrx-deploy.tar.gz
+
+# === Temporary Files ===
+tmp/
+temp/
+*.tmp
+
+# === Vercel ===
+.vercel

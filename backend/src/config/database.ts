@@ -20,7 +20,11 @@ const pool = new Pool({
         ? {
             rejectUnauthorized: true,
             ca: process.env.DB_SSL_CA_PATH
-                ? fs.readFileSync(path.resolve(process.cwd(), process.env.DB_SSL_CA_PATH)).toString()
+                ? fs.readFileSync(
+                    path.isAbsolute(process.env.DB_SSL_CA_PATH)
+                        ? process.env.DB_SSL_CA_PATH
+                        : path.resolve(process.cwd(), process.env.DB_SSL_CA_PATH)
+                ).toString()
                 : process.env.DB_SSL_CA,
         }
         : undefined,
