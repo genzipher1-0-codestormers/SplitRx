@@ -25,11 +25,18 @@ export default function PatientDashboard() {
             const [rxRes, consentRes, auditRes] = await Promise.all([
                 prescriptionAPI.getMyPrescriptions().catch(() => ({ data: { prescriptions: [] } })),
                 consentAPI.getMyConsents().catch(() => ({ data: { consents: [] } })),
-                auditAPI.getMyAuditTrail().catch(() => ({ data: { auditTrail: [] } }))
+                auditAPI.getMyAuditTrail().catch(() => ({ data: { logs: [] } }))
             ]);
             setPrescriptions(rxRes.data.prescriptions || []);
             setConsents(consentRes.data.consents || []);
-            setAuditTrail(auditRes.data.auditTrail || []);
+            const rawLogs = auditRes.data.logs || auditRes.data.auditTrail || [];
+            const normalizedLogs = rawLogs.map((entry: any) => ({
+                ...entry,
+                risk_score: entry.metadata?.risk_score ?? entry.risk_score ?? 0,
+                created_at: entry.timestamp ?? entry.created_at,
+                resource_owner: entry.resource_owner_id ?? entry.resource_owner
+            }));
+            setAuditTrail(normalizedLogs);
         } catch (error) {
             console.error("Failed to load data", error);
             toast.error('Failed to load data');
@@ -186,7 +193,7 @@ export default function PatientDashboard() {
                         {auditTrail.map(entry => (
                             <div key={entry.id} className={`p-3 rounded border-l-4 ${entry.risk_score > 50 ? 'bg-red-900/20 border-red-500' : 'bg-gray-800 border-gray-600'}`}>
                                 <div className="flex justify-between text-xs text-gray-500 mb-1">
-                                    <span>{new Date(entry.created_at).toLocaleString()}</span>
+                                    <span>{entry.created_at ? new Date(entry.created_at).toLocaleString() : 'N/A'}</span>
                                     <span>Risk Score: {entry.risk_score}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -194,10 +201,10 @@ export default function PatientDashboard() {
                                     {entry.risk_score > 50 && <span className="bg-red-600 text-white text-[10px] px-1 rounded">⚠️ High Risk</span>}
                                 </div>
                                 <div className="text-sm text-gray-400 mt-1">
-                                    Resource: {entry.resource_type} | Owner: {entry.resource_owner}
+                                    Resource: {entry.resource_type} | Owner: {entry.resource_owner || 'N/A'}
                                 </div>
                                 <div className="text-xs text-gray-600 font-mono mt-1 w-full overflow-hidden text-ellipsis whitespace-nowrap">
-                                    Hash: {entry.entry_hash}
+                                    Hash: {entry.entry_hash || 'N/A'}
                                 </div>
                             </div>
                         ))}
