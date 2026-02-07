@@ -54,8 +54,13 @@ export const authAPI = {
 export const prescriptionAPI = {
     create: (data: any) => api.post('/prescriptions', data),
     getMyPrescriptions: () => api.get('/prescriptions/my'),
-    getQRCode: (id: string) => api.get(`/prescriptions/${id}/qr`),
-    verifyAndDispense: (data: any) => api.post('/prescriptions/verify-dispense', data)
+    getQRCode: (id: string) => api.get(`/prescriptions/${id}/qr`)
+};
+
+// Dispensing endpoints (pharmacist)
+export const dispensingAPI = {
+    verify: (id: string) => api.get(`/dispensing/verify/${id}`),
+    dispense: (id: string) => api.post(`/dispensing/dispense/${id}`)
 };
 
 // Consent endpoints
