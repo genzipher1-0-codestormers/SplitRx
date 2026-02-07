@@ -15,6 +15,8 @@ export default function DashboardPage() {
     useEffect(() => {
         if (!loading && !user) {
             router.push('/login');
+        } else if (!loading && user && user.role === 'admin') {
+            router.push('/admin');
         }
     }, [user, loading, router]);
 
@@ -34,7 +36,7 @@ export default function DashboardPage() {
                 {user.role === 'pharmacist' && <PharmacistDashboard />}
 
                 {/* Fallback for unknown roles */}
-                {!['doctor', 'patient', 'pharmacist'].includes(user.role) && (
+                {!['doctor', 'patient', 'pharmacist', 'admin'].includes(user.role) && (
                     <div className="p-6 text-center">
                         <h2 className="text-2xl font-bold text-red-500">Unauthorized Access</h2>
                         <p className="text-gray-400">Your role ({user.role}) is not authorized to view this dashboard.</p>
