@@ -25,6 +25,13 @@ api.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: any) => {
         if (typeof window !== 'undefined') {
+            const originalRequest = error.config;
+
+            // Allow 401 on auth endpoints to be handled by the component
+            if (originalRequest.url?.includes('/auth/login') ||
+                originalRequest.url?.includes('/auth/register')) {
+                return Promise.reject(error);
+            }
             if (error.response?.status === 401) {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('user');
@@ -54,8 +61,13 @@ export const authAPI = {
 export const prescriptionAPI = {
     create: (data: any) => api.post('/prescriptions', data),
     getMyPrescriptions: () => api.get('/prescriptions/my'),
-    getQRCode: (id: string) => api.get(`/prescriptions/${id}/qr`),
-    verifyAndDispense: (data: any) => api.post('/prescriptions/verify-dispense', data)
+    getQRCode: (id: string) => api.get(`/prescriptions/${id}/qr`)
+};
+
+// Dispensing endpoints (pharmacist)
+export const dispensingAPI = {
+    verify: (id: string) => api.get(`/dispensing/verify/${id}`),
+    dispense: (id: string) => api.post(`/dispensing/dispense/${id}`)
 };
 
 // Consent endpoints

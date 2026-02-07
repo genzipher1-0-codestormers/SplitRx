@@ -54,6 +54,27 @@ export default function PatientDashboard() {
         }
     };
 
+    const copyToClipboard = async (value: string, successMessage: string) => {
+        try {
+            await navigator.clipboard.writeText(value);
+            toast.success(successMessage);
+        } catch (error) {
+            console.error('Clipboard error', error);
+            toast.error('Copy failed. Please try again.');
+        }
+    };
+
+    const buildShareableQrPayload = (rx: any) => {
+        const payloadHash = rx.contentHash || rx.payloadHash || '';
+        return JSON.stringify({
+            type: 'SPLITRX_VERIFY',
+            prescriptionId: rx.id,
+            prescriptionNumber: rx.prescriptionNumber,
+            payloadHash,
+            patientId: user?.id,
+            timestamp: Date.now()
+        });
+    };
     const revokeConsent = async (consentId: string) => {
         if (!confirm('Are you sure you want to revoke this consent?')) return;
         try {
@@ -91,7 +112,16 @@ export default function PatientDashboard() {
             <div className="mb-8 border-b border-gray-700 pb-4">
                 <h1 className="text-3xl font-bold text-white">🏥 Patient Dashboard</h1>
                 <p className="text-gray-400">Welcome, {user?.fullName}</p>
-                <p className="text-xs text-gray-500 mt-1">Your ID: <code className="bg-gray-800 px-1 rounded">{user?.id}</code></p>
+                <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                    <span>Your ID:</span>
+                    <code className="bg-gray-800 px-1 rounded">{user?.id}</code>
+                    <button
+                        onClick={() => user?.id && copyToClipboard(user.id, 'Patient ID copied')}
+                        className="text-blue-400 hover:text-blue-300 underline"
+                    >
+                        Copy
+                    </button>
+                </div>
             </div>
 
             <div className="flex flex-wrap gap-2 mb-6">
@@ -137,18 +167,26 @@ export default function PatientDashboard() {
                                     ))}
                                 </div>
 
-                                <div className="mt-3 flex justify-between items-end">
+                                <div className="mt-3 flex flex-wrap gap-2 justify-between items-end">
                                     <p className="text-xs text-gray-600 font-mono">
                                         Hash: {(rx.contentHash || rx.payloadHash || '').substring(0, 12)}...
                                     </p>
-                                    {rx.status === 'active' && (
+                                    <div className="flex gap-2">
                                         <button
-                                            onClick={() => generateQR(rx.id)}
-                                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                                            onClick={() => copyToClipboard(buildShareableQrPayload(rx), 'QR data copied')}
+                                            className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition"
                                         >
-                                            📱 Generate QR
+                                            📋 Copy QR Data
                                         </button>
-                                    )}
+                                        {rx.status === 'active' && (
+                                            <button
+                                                onClick={() => generateQR(rx.id)}
+                                                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                                            >
+                                                📱 Generate QR
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         ))

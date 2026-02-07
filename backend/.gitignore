@@ -7,3 +7,5 @@ coverage
 *.log
 .vscode
 .idea
+src/scripts/reset-admin-password.ts
+src/scripts/reset-admin-password.ts

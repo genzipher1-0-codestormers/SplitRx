@@ -1,8 +1,7 @@
-
 'use client';
 
 import { useState } from 'react';
-import { prescriptionAPI } from '@/services/api';
+import { dispensingAPI } from '@/services/api';
 import toast from 'react-hot-toast';
 
 export default function PharmacistDashboard() {
@@ -17,18 +16,31 @@ export default function PharmacistDashboard() {
         try {
             const parsed = JSON.parse(scanData);
 
-            if (parsed.type !== 'SPLITRX_VERIFY') {
+            if (!parsed.prescriptionId) {
                 throw new Error('Invalid QR code format');
             }
 
-            const response = await prescriptionAPI.verifyAndDispense({
-                prescriptionId: parsed.prescriptionId,
-                contentHash: parsed.contentHash
+            const response = await dispensingAPI.dispense(parsed.prescriptionId);
+            const dispensing = response.data?.dispensing;
+
+            if (!dispensing) {
+                throw new Error('Unexpected response from server');
+            }
+
+            setVerificationResult({
+                verified: true,
+                dispensedAt: dispensing.dispensedAt,
+                dispensingId: dispensing.dispensingId,
+                signatureVerified: dispensing.signatureVerified,
+                integrityVerified: dispensing.integrityVerified,
+                prescriptionData: {
+                    diagnosis: dispensing.payload?.diagnosis,
+                    prescribedBy: dispensing.doctorName,
+                    medications: dispensing.payload?.medications || []
+                }
             });
 
-            setVerificationResult(response.data);
             toast.success('✅ Prescription verified and dispensed!');
-
         } catch (error: any) {
             setVerificationResult({
                 verified: false,
@@ -85,11 +97,11 @@ export default function PharmacistDashboard() {
                                     <div className="space-y-2 mb-6 text-gray-300">
                                         <p className="flex items-center gap-2">
                                             <span className="text-green-500">🔏</span>
-                                            <strong>Signature:</strong> Valid — Doctor identity confirmed
+                                            <strong>Signature:</strong> {verificationResult.signatureVerified ? 'Valid' : 'Invalid'}
                                         </p>
                                         <p className="flex items-center gap-2">
                                             <span className="text-green-500">🔗</span>
-                                            <strong>Integrity:</strong> Hash matches — No tampering detected
+                                            <strong>Integrity:</strong> {verificationResult.integrityVerified ? 'Valid' : 'Invalid'}
                                         </p>
                                         <p className="flex items-center gap-2">
                                             <span className="text-green-500">📅</span>
@@ -113,7 +125,7 @@ export default function PharmacistDashboard() {
                                     </div>
 
                                     <p className="text-xs text-gray-600 mt-4 font-mono break-all">
-                                        Verification Hash: {verificationResult.verificationHash}
+                                        Dispensing ID: {verificationResult.dispensingId}
                                     </p>
                                 </>
                             ) : (
