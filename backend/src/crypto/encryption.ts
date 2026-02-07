@@ -13,7 +13,7 @@ export class EncryptionService {
     private masterKey: Buffer;
 
     constructor() {
-        const key = process.env.ENCRYPTION_MASTER_KEY;
+        const key = process.env.ENCRYPTION_MASTER_KEY || process.env.ENCRYPTION_KEY;
         if (!key || key.length < 32) {
             // In a real app, this should probably throw, but for dev we can warn or wait for env
             // throw new Error('ENCRYPTION_MASTER_KEY must be at least 32 characters');
