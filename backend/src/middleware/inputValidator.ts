@@ -28,7 +28,15 @@ export const loginSchema = z.object({
     password: z.string().min(1).max(128),
 });
 
-export const prescriptionSchema = z.object({
+const medicationItemSchema = z.object({
+    name: z.string().min(1).max(200)
+        .regex(/^[a-zA-Z0-9\s\-().,%/]+$/, 'Invalid characters in medication name'),
+    dosage: z.string().min(1).max(100),
+    frequency: z.string().min(1).max(100),
+    duration: z.string().min(1).max(100),
+});
+
+const legacyPrescriptionSchema = z.object({
     patient_id: z.string().uuid(),
     medication_name: z.string().min(1).max(200)
         .regex(/^[a-zA-Z0-9\s\-().,%/]+$/, 'Invalid characters in medication name'),
@@ -38,6 +46,17 @@ export const prescriptionSchema = z.object({
     notes: z.string().max(1000).optional(),
     expires_in_days: z.number().int().min(1).max(365),
 });
+
+export const prescriptionSchema = z.union([
+    z.object({
+        patient_id: z.string().uuid(),
+        diagnosis: z.string().min(1).max(200),
+        medications: z.array(medicationItemSchema).min(1),
+        notes: z.string().max(1000).optional(),
+        expires_in_days: z.number().int().min(1).max(365),
+    }),
+    legacyPrescriptionSchema,
+]);
 
 export const consentSchema = z.object({
     granted_to: z.string().uuid(),
