@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Build
+dist
+build
+
+# Testing
+coverage
+
+# Misc
+.DS_Store
+*.log
+
+# Local env files (will be mounted or passed)
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Git
+.git
+.gitignore
+
+# README
+README.md

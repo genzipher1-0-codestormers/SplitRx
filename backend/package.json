@@ -11,6 +11,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "seed:admin": "ts-node src/scripts/admin.seed.ts",
+    "seed:demo": "ts-node src/scripts/seed-demo-users.ts",
     "db:init": "ts-node src/scripts/init-db.ts"
   },
   "keywords": [],

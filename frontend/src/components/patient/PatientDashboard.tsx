@@ -381,22 +381,10 @@ export default function PatientDashboard() {
 
             {/* PRIVACY TAB */}
             {activeTab === 'privacy' && (
-<<<<<<< HEAD
                 <div className="space-y-6 animate-fade-in">
                     <div className="flex items-center gap-2">
                         <Shield className="w-5 h-5 text-[#3a6ea5]" />
                         <h2 className="text-xl font-bold text-white">Privacy Controls</h2>
-=======
-                <div className="space-y-6">
-                    <h2 className="text-xl font-bold text-white">🔒 Privacy Controls</h2>
-
-                    <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-                        <h3 className="text-lg font-semibold text-white mb-2">📤 Export My Data (GDPR Art. 20)</h3>
-                        <p className="text-gray-400 text-sm mb-4">Download all your medical data in a portable JSON format.</p>
-                        <button onClick={downloadMyData} className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition">
-                            Download My Data
-                        </button>
->>>>>>> b4a5e3cb1f6e59cbabe8dbe02c22f8421b8a861c
                     </div>
 
                     {/* Export Data Card */}

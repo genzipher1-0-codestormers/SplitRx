@@ -4,8 +4,10 @@ services:
     image: postgres:15-alpine
     container_name: splitrx_db
     restart: always
-    env_file:
-      - ./backend/.env
+    environment:
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_NAME:-splitrx}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
@@ -24,9 +26,6 @@ services:
       - db
     env_file:
       - ./backend/.env
-    environment:
-      # Override DB_HOST for internal docker network
-      - DB_HOST=db
     ports:
       - "${PORT:-3000}:3000"
     volumes:
