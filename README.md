@@ -105,6 +105,17 @@ See [deploy.sh](deploy.sh) for automated server deployment.
 | **Backend** | Express.js + TypeScript |
 | **Frontend** | Next.js 16 + TypeScript |
 
+## 🚨 Administrative Tools (Demo Only)
+
+### Audit Integrity Fix
+To manually verify and fix the cryptographic hash chain of the audit log (for demonstration/recovery), run this command inside the Docker container:
+
+```bash
+docker exec -it splitrx_backend npx ts-node scripts/fix_audit_integrity.ts
+```
+
+> **Note:** In a real production environment, this capability would be restricted. It is included here for demonstration purposes to show how the system can self-repair broken chains in a controlled environment.
+
 ---
 
 ## 📁 Project Structure

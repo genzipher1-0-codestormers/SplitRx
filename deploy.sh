@@ -72,8 +72,4 @@ echo "running containers:"
 ssh $REMOTE_HOST "docker ps"
 echo "🌐 Verify at https://splitrx.kvinda.qzz.io"
 
-# Sync environment file
-echo "🔐 Syncing environment file..."
-scp .env.production deploy@178.128.98.3:~/app/.env
-ssh deploy@178.128.98.3 "chmod 600 ~/app/.env && cd ~/app && docker compose -f docker-compose.prod.yml restart backend"
-echo "✅ Environment synced and backend restarted!"
+
