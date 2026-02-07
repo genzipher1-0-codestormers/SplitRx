@@ -109,30 +109,27 @@ export default function PatientDashboard() {
     ];
 
     return (
-        <div className="p-6">
-            <div className="mb-8 border-b border-gray-700 pb-4">
+        <div className="space-y-6">
+            <div className="panel p-6 rounded-2xl">
                 <h1 className="text-3xl font-bold text-white">🏥 Patient Dashboard</h1>
-                <p className="text-gray-400">Welcome, {user?.fullName}</p>
-                <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                <p className="muted">Welcome, {user?.fullName}</p>
+                <div className="flex items-center gap-2 text-xs muted mt-2">
                     <span>Your ID:</span>
-                    <code className="bg-gray-800 px-1 rounded">{user?.id}</code>
+                    <code className="bg-[#071a33] px-2 py-1 rounded">{user?.id}</code>
                     <button
                         onClick={() => user?.id && copyToClipboard(user.id, 'Patient ID copied')}
-                        className="text-blue-400 hover:text-blue-300 underline"
+                        className="btn-outline px-2 py-0.5 rounded"
                     >
                         Copy
                     </button>
                 </div>
             </div>
 
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-2">
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
-                        className={`px-4 py-2 rounded font-medium transition ${activeTab === tab.id
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                            }`}
+                        className={`${activeTab === tab.id ? 'tab tab-active' : 'tab'}`}
                         onClick={() => setActiveTab(tab.id)}
                     >
                         {tab.label}
@@ -145,44 +142,44 @@ export default function PatientDashboard() {
                 <div className="space-y-4">
                     <h2 className="text-xl font-bold text-white">💊 My Prescriptions</h2>
                     {prescriptions.length === 0 ? (
-                        <p className="text-gray-500 italic">No prescriptions yet</p>
+                        <p className="muted italic">No prescriptions yet</p>
                     ) : (
                         prescriptions.map(rx => (
-                            <div key={rx.id} className={`bg-gray-800 p-4 rounded-lg border-l-4 ${rx.status === 'active' ? 'border-green-500' : 'border-gray-500'}`}>
+                            <div key={rx.id} className={`panel p-4 rounded-2xl border-l-4 ${rx.status === 'active' ? 'border-[#2e8b57]' : 'border-[#708090]'}`}>
                                 <div className="flex justify-between items-start mb-2">
-                                    <span className={`px-2 py-1 rounded text-xs uppercase font-bold ${rx.status === 'active' ? 'bg-green-900 text-green-200' : 'bg-gray-700 text-gray-300'
+                                    <span className={`px-2 py-1 rounded text-xs uppercase font-bold ${rx.status === 'active' ? 'bg-[#102f55] text-[#e0ffff]' : 'bg-[#0b1d38] text-[#708090]'
                                         }`}>
                                         {rx.status}
                                     </span>
-                                    <span className="text-gray-400 text-sm">{new Date(rx.prescribedAt).toLocaleDateString()}</span>
+                                    <span className="muted text-sm">{new Date(rx.prescribedAt).toLocaleDateString()}</span>
                                 </div>
-                                <p className="text-white"><strong className="text-gray-400">Doctor:</strong> {rx.doctorName}</p>
-                                <p className="text-white"><strong className="text-gray-400">Diagnosis:</strong> {(rx.data || rx.payload)?.diagnosis}</p>
+                                <p className="text-white"><strong className="muted">Doctor:</strong> {rx.doctorName}</p>
+                                <p className="text-white"><strong className="muted">Diagnosis:</strong> {(rx.data || rx.payload)?.diagnosis}</p>
 
-                                <div className="mt-3 bg-gray-900/50 p-2 rounded">
-                                    <strong className="text-gray-300 text-sm block mb-1">Medications:</strong>
+                                <div className="mt-3 panel-strong p-3 rounded-xl">
+                                    <strong className="text-sm block mb-1 muted">Medications:</strong>
                                     {(rx.data || rx.payload)?.medications?.map((med: any, i: number) => (
-                                        <div key={i} className="text-sm text-gray-200 ml-2">
+                                        <div key={i} className="text-sm text-white/90 ml-2">
                                             • {med.name} — {med.dosage} ({med.frequency})
                                         </div>
                                     ))}
                                 </div>
 
                                 <div className="mt-3 flex flex-wrap gap-2 justify-between items-end">
-                                    <p className="text-xs text-gray-600 font-mono">
+                                    <p className="text-xs muted font-mono">
                                         Hash: {(rx.contentHash || rx.payloadHash || '').substring(0, 12)}...
                                     </p>
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => copyToClipboard(buildShareableQrPayload(rx), 'QR data copied')}
-                                            className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition"
+                                            className="btn-secondary px-3 py-1 rounded-lg text-sm transition"
                                         >
                                             📋 Copy QR Data
                                         </button>
                                         {rx.status === 'active' && (
                                             <button
                                                 onClick={() => generateQR(rx.id)}
-                                                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                                                className="btn-primary px-3 py-1 rounded-lg text-sm transition"
                                             >
                                                 📱 Generate QR
                                             </button>
@@ -199,20 +196,20 @@ export default function PatientDashboard() {
             {activeTab === 'consents' && (
                 <div className="space-y-4">
                     <h2 className="text-xl font-bold text-white">✅ My Consent Records</h2>
-                    <p className="text-sm text-blue-300 bg-blue-900/20 p-2 rounded">
+                    <p className="text-sm bg-[#102f55]/80 p-3 rounded-xl muted">
                         GDPR Art. 7 — You control who can access your data
                     </p>
                     {consents.map(c => (
-                        <div key={c.id} className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                        <div key={c.id} className="panel p-4 rounded-2xl">
                             <div className="flex justify-between mb-2">
                                 <p className="text-white"><strong>Granted to:</strong> {c.granted_to_name} ({c.granted_to_role})</p>
-                                <span className={`px-2 py-0.5 rounded text-xs uppercase ${c.status === 'active' ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'}`}>{c.status}</span>
+                                <span className={`px-2 py-0.5 rounded text-xs uppercase ${c.status === 'active' ? 'bg-[#102f55] text-[#e0ffff]' : 'bg-[#2a0f1b] text-[#dc143c]'}`}>{c.status}</span>
                             </div>
-                            <p className="text-gray-300 text-sm"><strong>Purpose:</strong> {c.purpose}</p>
-                            <p className="text-gray-300 text-sm"><strong>Data:</strong> {c.data_categories?.join(', ')}</p>
-                            <p className="text-gray-500 text-xs mt-2">Expires: {new Date(c.expires_at).toLocaleDateString()}</p>
+                            <p className="text-sm muted"><strong>Purpose:</strong> {c.purpose}</p>
+                            <p className="text-sm muted"><strong>Data:</strong> {c.data_categories?.join(', ')}</p>
+                            <p className="text-xs muted mt-2">Expires: {new Date(c.expires_at).toLocaleDateString()}</p>
                             {c.status === 'active' && (
-                                <button onClick={() => revokeConsent(c.id)} className="mt-2 text-red-400 hover:text-red-300 text-sm font-medium">
+                                <button onClick={() => revokeConsent(c.id)} className="mt-2 text-[#dc143c] hover:text-[#ff3b61] text-sm font-medium">
                                     🚫 Revoke Consent
                                 </button>
                             )}
@@ -225,24 +222,24 @@ export default function PatientDashboard() {
             {activeTab === 'audit' && (
                 <div className="space-y-4">
                     <h2 className="text-xl font-bold text-white">📋 Audit Trail</h2>
-                    <p className="text-sm text-blue-300 bg-blue-900/20 p-2 rounded">
+                    <p className="text-sm bg-[#102f55]/80 p-3 rounded-xl muted">
                         GDPR Art. 15 — Every access to your data is logged immutably
                     </p>
                     <div className="space-y-2">
                         {auditTrail.map(entry => (
-                            <div key={entry.id} className={`p-3 rounded border-l-4 ${entry.risk_score > 50 ? 'bg-red-900/20 border-red-500' : 'bg-gray-800 border-gray-600'}`}>
-                                <div className="flex justify-between text-xs text-gray-500 mb-1">
+                            <div key={entry.id} className={`p-3 rounded-xl border-l-4 ${entry.risk_score > 50 ? 'bg-[#2a0f1b] border-[#dc143c]' : 'panel-strong border-[#2b4f7a]'}`}>
+                                <div className="flex justify-between text-xs muted mb-1">
                                     <span>{entry.created_at ? new Date(entry.created_at).toLocaleString() : 'N/A'}</span>
                                     <span>Risk Score: {entry.risk_score}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <strong className="text-white">{entry.action}</strong>
-                                    {entry.risk_score > 50 && <span className="bg-red-600 text-white text-[10px] px-1 rounded">⚠️ High Risk</span>}
+                                    {entry.risk_score > 50 && <span className="bg-[#dc143c] text-white text-[10px] px-1 rounded">High Risk</span>}
                                 </div>
-                                <div className="text-sm text-gray-400 mt-1">
+                                <div className="text-sm muted mt-1">
                                     Resource: {entry.resource_type} | Owner: {entry.resource_owner || 'N/A'}
                                 </div>
-                                <div className="text-xs text-gray-600 font-mono mt-1 w-full overflow-hidden text-ellipsis whitespace-nowrap">
+                                <div className="text-xs muted font-mono mt-1 w-full overflow-hidden text-ellipsis whitespace-nowrap">
                                     Hash: {entry.entry_hash || 'N/A'}
                                 </div>
                             </div>
@@ -256,21 +253,21 @@ export default function PatientDashboard() {
                 <div className="space-y-6">
                     <h2 className="text-xl font-bold text-white">🔒 Privacy Controls</h2>
 
-                    <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                    <div className="panel p-4 rounded-2xl">
                         <h3 className="text-lg font-semibold text-white mb-2">📤 Export My Data (GDPR Art. 20)</h3>
-                        <p className="text-gray-400 text-sm mb-4">Download all your medical data in a portable JSON format.</p>
-                        <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition">
+                        <p className="muted text-sm mb-4">Download all your medical data in a portable JSON format.</p>
+                        <button className="btn-secondary px-4 py-2 rounded-lg transition">
                             Download My Data
                         </button>
                     </div>
 
-                    <div className="bg-red-900/10 p-4 rounded-lg border border-red-800">
-                        <h3 className="text-lg font-semibold text-red-400 mb-2">🗑️ Right to Erasure (GDPR Art. 17)</h3>
-                        <p className="text-gray-400 text-sm mb-4">
+                    <div className="panel-strong p-4 rounded-2xl border border-[#5a1c2b]">
+                        <h3 className="text-lg font-semibold text-[#dc143c] mb-2">🗑️ Right to Erasure (GDPR Art. 17)</h3>
+                        <p className="muted text-sm mb-4">
                             Permanently delete ALL your medical data via crypto-shredding.
                             This action CANNOT be undone.
                         </p>
-                        <button onClick={eraseAllData} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition font-bold">
+                        <button onClick={eraseAllData} className="btn-danger px-4 py-2 rounded-lg transition font-bold">
                             ⚠️ Erase All My Data
                         </button>
                     </div>
@@ -280,8 +277,8 @@ export default function PatientDashboard() {
             {/* QR Code Modal */}
             {selectedQR && (
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" onClick={() => setSelectedQR(null)}>
-                    <div className="bg-white p-6 rounded-lg max-w-sm w-full text-center" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-xl font-bold text-gray-900 mb-4">📱 Show to Pharmacist</h3>
+                    <div className="panel p-6 rounded-2xl max-w-sm w-full text-center" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="text-xl font-bold text-white mb-4">📱 Show to Pharmacist</h3>
                         <div className="flex justify-center mb-4">
                             {/* Using img tag because the API returns a data URL or we render it from string */}
                             {/* If the API returns a raw string for QR, we use QRCode component. 
@@ -291,12 +288,12 @@ export default function PatientDashboard() {
                                Back end sends: `{ qrCode: await QRCode.toDataURL(...) }`
                                So it is an image source.
                            */}
-                            <img src={selectedQR.qrCode} alt="Prescription QR Code" className="w-64 h-64" />
+                            <img src={selectedQR.qrCode} alt="Prescription QR Code" className="w-64 h-64 rounded-lg border border-[#1c3c63]" />
                         </div>
-                        <p className="text-sm text-gray-600 mb-4">Expires in: {selectedQR.expiresIn}</p>
+                        <p className="text-sm muted mb-4">Expires in: {selectedQR.expiresIn}</p>
                         <button
                             onClick={() => setSelectedQR(null)}
-                            className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 w-full"
+                            className="btn-secondary px-4 py-2 rounded-lg w-full"
                         >
                             Close
                         </button>

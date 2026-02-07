@@ -10,27 +10,21 @@ export default function DoctorDashboard() {
     const [activeTab, setActiveTab] = useState('write');
 
     return (
-        <div className="p-6">
-            <div className="mb-8">
+        <div className="space-y-6">
+            <div className="panel p-6 rounded-2xl">
                 <h1 className="text-3xl font-bold text-white">👨‍⚕️ Doctor Dashboard</h1>
-                <p className="text-gray-400">Welcome, Dr. {user?.fullName}</p>
+                <p className="muted">Welcome, Dr. {user?.fullName}</p>
             </div>
 
-            <div className="flex gap-4 mb-6">
+            <div className="flex flex-wrap gap-3">
                 <button
-                    className={`px-4 py-2 rounded font-medium transition ${activeTab === 'write'
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                        }`}
+                    className={`${activeTab === 'write' ? 'tab tab-active' : 'tab'}`}
                     onClick={() => setActiveTab('write')}
                 >
                     ✍️ Write Prescription
                 </button>
                 <button
-                    className={`px-4 py-2 rounded font-medium transition ${activeTab === 'history'
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                        }`}
+                    className={`${activeTab === 'history' ? 'tab tab-active' : 'tab'}`}
                     onClick={() => setActiveTab('history')}
                 >
                     📋 History
@@ -39,7 +33,7 @@ export default function DoctorDashboard() {
 
             {activeTab === 'write' && <WritePrescription />}
             {activeTab === 'history' && (
-                <div className="text-center text-gray-500 py-10">
+                <div className="panel-strong rounded-2xl p-8 text-center muted">
                     History feature coming soon...
                 </div>
             )}

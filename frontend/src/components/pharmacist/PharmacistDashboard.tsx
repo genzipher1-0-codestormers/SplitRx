@@ -54,34 +54,37 @@ export default function PharmacistDashboard() {
     };
 
     return (
-        <div className="p-6">
-            <h1 className="text-3xl font-bold text-white mb-8">💊 Pharmacist Dashboard</h1>
+        <div className="space-y-6">
+            <div className="panel p-6 rounded-2xl">
+                <h1 className="text-3xl font-bold text-white">💊 Pharmacist Dashboard</h1>
+                <p className="muted">Verify prescriptions with cryptographic proof before dispensing.</p>
+            </div>
 
             <div className="grid md:grid-cols-2 gap-8">
                 {/* Verification Form */}
-                <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                <div className="panel p-6 rounded-2xl">
                     <h2 className="text-xl font-bold text-white mb-4">🔍 Verify Prescription</h2>
-                    <p className="text-gray-400 text-sm mb-4">
+                    <p className="muted text-sm mb-4">
                         Scan the patient's QR code or paste the JSON content manually.
                         This will verify the digital signature and integrity hash.
                     </p>
 
                     <form onSubmit={handleManualEntry} className="space-y-4">
                         <div>
-                            <label className="block text-gray-300 mb-1">QR Code Data (JSON)</label>
+                            <label className="block text-sm muted mb-1">QR Code Data (JSON)</label>
                             <textarea
                                 value={scanData}
                                 onChange={(e) => setScanData(e.target.value)}
                                 placeholder='{"prescriptionId": "...", "contentHash": "...", "type": "SPLITRX_VERIFY"}'
                                 rows={6}
                                 required
-                                className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
+                                className="input font-mono text-sm"
                             />
                         </div>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition disabled:opacity-50"
+                            className="w-full btn-primary font-bold py-3 px-4 rounded-xl transition disabled:opacity-50"
                         >
                             {loading ? '🔄 Verifying...' : '✅ Verify & Dispense'}
                         </button>
@@ -91,50 +94,50 @@ export default function PharmacistDashboard() {
                 {/* Verification Result */}
                 <div>
                     {verificationResult && (
-                        <div className={`p-6 rounded-lg border-2 ${verificationResult.verified ? 'bg-green-900/20 border-green-500' : 'bg-red-900/20 border-red-500'}`}>
+                        <div className={`p-6 rounded-2xl border-2 ${verificationResult.verified ? 'panel border-[#2e8b57]' : 'panel-strong border-[#dc143c]'}`}>
                             {verificationResult.verified ? (
                                 <>
-                                    <h3 className="text-2xl font-bold text-green-400 mb-4">✅ VERIFIED</h3>
+                                    <h3 className="text-2xl font-bold text-[#2e8b57] mb-4">✅ VERIFIED</h3>
 
-                                    <div className="space-y-2 mb-6 text-gray-300">
+                                    <div className="space-y-2 mb-6 text-white/90">
                                         <p className="flex items-center gap-2">
-                                            <span className="text-green-500">🔏</span>
+                                            <span className="text-[#2e8b57]">🔏</span>
                                             <strong>Signature:</strong> {verificationResult.signatureVerified ? 'Valid' : 'Invalid'}
                                         </p>
                                         <p className="flex items-center gap-2">
-                                            <span className="text-green-500">🔗</span>
+                                            <span className="text-[#2e8b57]">🔗</span>
                                             <strong>Integrity:</strong> {verificationResult.integrityVerified ? 'Valid' : 'Invalid'}
                                         </p>
                                         <p className="flex items-center gap-2">
-                                            <span className="text-green-500">📅</span>
+                                            <span className="text-[#2e8b57]">📅</span>
                                             <strong>Dispensed:</strong> {new Date(verificationResult.dispensedAt).toLocaleString()}
                                         </p>
                                     </div>
 
-                                    <div className="bg-gray-900/50 p-4 rounded mb-4">
+                                    <div className="panel-strong p-4 rounded-xl mb-4">
                                         <h4 className="text-white font-semibold mb-2">Prescription Details:</h4>
-                                        <p className="text-gray-300"><strong>Diagnosis:</strong> {verificationResult.prescriptionData.diagnosis}</p>
-                                        <p className="text-gray-300"><strong>Prescribed by:</strong> {verificationResult.prescriptionData.prescribedBy}</p>
+                                        <p className="text-white/90"><strong>Diagnosis:</strong> {verificationResult.prescriptionData.diagnosis}</p>
+                                        <p className="text-white/90"><strong>Prescribed by:</strong> {verificationResult.prescriptionData.prescribedBy}</p>
                                     </div>
 
-                                    <div className="bg-gray-900/50 p-4 rounded">
+                                    <div className="panel-strong p-4 rounded-xl">
                                         <h4 className="text-white font-semibold mb-2">Medications to Dispense:</h4>
                                         {verificationResult.prescriptionData.medications.map((med: any, i: number) => (
-                                            <div key={i} className="text-blue-300 mb-1 border-b border-gray-700 last:border-0 pb-1 last:pb-0">
+                                            <div key={i} className="text-[#e0ffff] mb-1 border-b border-[#1c3c63] last:border-0 pb-1 last:pb-0">
                                                 <strong>{med.name}</strong> — {med.dosage} — {med.frequency} — {med.duration}
                                             </div>
                                         ))}
                                     </div>
 
-                                    <p className="text-xs text-gray-600 mt-4 font-mono break-all">
+                                    <p className="text-xs muted mt-4 font-mono break-all">
                                         Dispensing ID: {verificationResult.dispensingId}
                                     </p>
                                 </>
                             ) : (
                                 <>
-                                    <h3 className="text-2xl font-bold text-red-500 mb-4">❌ VERIFICATION FAILED</h3>
-                                    <p className="text-white mb-4 bg-red-900/50 p-3 rounded">{verificationResult.error}</p>
-                                    <div className="bg-orange-900/20 border border-orange-600 p-4 rounded text-orange-200">
+                                    <h3 className="text-2xl font-bold text-[#dc143c] mb-4">❌ VERIFICATION FAILED</h3>
+                                    <p className="text-white mb-4 bg-[#2a0f1b] p-3 rounded">{verificationResult.error}</p>
+                                    <div className="bg-[#2a1c0f] border border-[#b45309] p-4 rounded text-[#fbd38d]">
                                         <p className="font-bold flex items-center gap-2">
                                             ⚠️ DO NOT DISPENSE
                                         </p>

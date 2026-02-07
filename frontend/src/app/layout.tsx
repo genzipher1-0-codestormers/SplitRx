@@ -1,11 +1,14 @@
 
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import Navbar from '@/components/common/Navbar';
 
-const inter = Inter({ subsets: ['latin'] });
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700']
+});
 
 export const metadata: Metadata = {
   title: 'SplitRx - Tamper-Proof Prescription System',
@@ -19,10 +22,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={spaceGrotesk.className}>
         <Providers>
-          <Navbar />
-          {children}
+          <div className="app-shell">
+            <Navbar />
+            <main className="app-main">{children}</main>
+          </div>
         </Providers>
       </body>
     </html>

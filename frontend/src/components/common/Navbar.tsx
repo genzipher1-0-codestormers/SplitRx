@@ -21,32 +21,28 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="flex items-center justify-between p-4 bg-gray-800 text-white shadow-md">
-            <div className="text-xl font-bold cursor-pointer flex items-center gap-2" onClick={() => router.push('/')}>
-                🔐 SplitRx
-            </div>
-            {user && (
-                <div className="flex items-center gap-4">
-                    {user.role === 'admin' && (
-                        <button
-                            onClick={() => router.push('/admin')}
-                            className="text-white hover:text-indigo-300 font-medium mr-4 transition-colors"
-                        >
-                            Dashboard
-                        </button>
-                    )}
-                    <span className="flex items-center gap-2">
-                        {roleIcons[user.role] || '👤'} <span className="font-medium">{user.full_name}</span>
-                        <span className="text-xs bg-gray-700 px-2 py-1 rounded-full uppercase">{user.role}</span>
-                    </span>
-                    <button
-                        onClick={handleLogout}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
-                    >
-                        Logout
-                    </button>
+        <nav className="sticky top-0 z-40 border-b border-[#1c3c63] bg-[#071a33]/85 backdrop-blur">
+            <div className="mx-auto flex items-center justify-between px-6 py-4 max-w-7xl">
+                <div className="text-xl font-bold cursor-pointer flex items-center gap-2" onClick={() => router.push('/')}>
+                    🔐 SplitRx
                 </div>
-            )}
+                {user && (
+                    <div className="flex items-center gap-3">
+                        <span className="flex items-center gap-2 text-sm">
+                            {roleIcons[user.role] || '👤'} <span className="font-medium">{user.fullName}</span>
+                            <span className="text-[11px] border border-[#2b4f7a] bg-[#102f55] px-2 py-1 rounded-full uppercase">
+                                {user.role}
+                            </span>
+                        </span>
+                        <button
+                            onClick={handleLogout}
+                            className="btn-danger px-3 py-1 rounded transition-colors"
+                        >
+                            Logout
+                        </button>
+                    </div>
+                )}
+            </div>
         </nav>
     );
 }

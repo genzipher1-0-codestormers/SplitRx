@@ -19,7 +19,7 @@ export default function DashboardPage() {
     }, [user, loading, router]);
 
     if (loading) {
-        return <div className="flex items-center justify-center min-h-screen text-white">Loading...</div>;
+        return <div className="flex items-center justify-center min-h-[60vh] text-white">Loading...</div>;
     }
 
     if (!user) {
@@ -27,20 +27,18 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white">
-            <div className="container mx-auto max-w-7xl py-6">
-                {user.role === 'doctor' && <DoctorDashboard />}
-                {user.role === 'patient' && <PatientDashboard />}
-                {user.role === 'pharmacist' && <PharmacistDashboard />}
+        <div className="mx-auto max-w-7xl">
+            {user.role === 'doctor' && <DoctorDashboard />}
+            {user.role === 'patient' && <PatientDashboard />}
+            {user.role === 'pharmacist' && <PharmacistDashboard />}
 
-                {/* Fallback for unknown roles */}
-                {!['doctor', 'patient', 'pharmacist'].includes(user.role) && (
-                    <div className="p-6 text-center">
-                        <h2 className="text-2xl font-bold text-red-500">Unauthorized Access</h2>
-                        <p className="text-gray-400">Your role ({user.role}) is not authorized to view this dashboard.</p>
-                    </div>
-                )}
-            </div>
+            {/* Fallback for unknown roles */}
+            {!['doctor', 'patient', 'pharmacist'].includes(user.role) && (
+                <div className="panel p-6 text-center rounded-2xl">
+                    <h2 className="text-2xl font-bold text-[#dc143c]">Unauthorized Access</h2>
+                    <p className="muted">Your role ({user.role}) is not authorized to view this dashboard.</p>
+                </div>
+            )}
         </div>
     );
 }

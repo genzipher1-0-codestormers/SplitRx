@@ -20,10 +20,10 @@ export default function Home() {
   }, [user, loading, router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">🔐 SplitRx</h1>
-        <p className="text-xl">Redirecting...</p>
+    <div className="flex items-center justify-center min-h-[70vh] text-white">
+      <div className="panel px-10 py-8 text-center">
+        <h1 className="text-4xl font-bold mb-3">🔐 SplitRx</h1>
+        <p className="text-lg muted">Redirecting...</p>
       </div>
     </div>
   );

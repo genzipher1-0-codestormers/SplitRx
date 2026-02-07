@@ -37,36 +37,36 @@ export default function RegisterForm() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
-            <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md border border-gray-700">
+        <div className="flex items-center justify-center min-h-[70vh] px-4">
+            <div className="panel w-full max-w-md p-8 rounded-2xl">
                 <h1 className="text-3xl font-bold text-center text-white mb-2">📝 Register</h1>
-                <p className="text-center text-gray-400 mb-6">Create your SplitRx account</p>
+                <p className="text-center muted mb-6">Create your SplitRx account</p>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-gray-300 mb-1">Full Name</label>
+                        <label className="block text-sm muted mb-1">Full Name</label>
                         <input
                             name="full_name"
                             type="text"
                             value={formData.full_name}
                             onChange={handleChange}
                             required
-                            className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-blue-500"
+                            className="input"
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-300 mb-1">Email</label>
+                        <label className="block text-sm muted mb-1">Email</label>
                         <input
                             name="email"
                             type="email"
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-blue-500"
+                            className="input"
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-300 mb-1">Password</label>
+                        <label className="block text-sm muted mb-1">Password</label>
                         <input
                             name="password"
                             type="password"
@@ -74,16 +74,16 @@ export default function RegisterForm() {
                             onChange={handleChange}
                             required
                             minLength={8}
-                            className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-blue-500"
+                            className="input"
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-300 mb-1">Role</label>
+                        <label className="block text-sm muted mb-1">Role</label>
                         <select
                             name="role"
                             value={formData.role}
                             onChange={handleChange}
-                            className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-blue-500"
+                            className="input"
                         >
                             <option value="patient">Patient</option>
                             <option value="doctor">Doctor</option>
@@ -92,14 +92,14 @@ export default function RegisterForm() {
                     </div>
                     {['doctor', 'pharmacist'].includes(formData.role) && (
                         <div>
-                            <label className="block text-gray-300 mb-1">License Number</label>
+                            <label className="block text-sm muted mb-1">License Number</label>
                             <input
                                 name="licenseNumber"
                                 type="text"
                                 value={formData.licenseNumber}
                                 onChange={handleChange}
                                 required
-                                className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-blue-500"
+                                className="input"
                             />
                         </div>
                     )}
@@ -107,14 +107,14 @@ export default function RegisterForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition disabled:opacity-50"
+                        className="w-full btn-primary font-bold py-2 px-4 rounded-xl transition disabled:opacity-50"
                     >
                         {loading ? 'Creating Account...' : 'Register'}
                     </button>
                 </form>
 
-                <p className="mt-4 text-center text-gray-400 text-sm">
-                    Already have an account? <Link href="/login" className="text-blue-400 hover:underline">Login here</Link>
+                <p className="mt-4 text-center text-sm muted">
+                    Already have an account? <Link href="/login" className="text-[#e0ffff] hover:underline">Login here</Link>
                 </p>
             </div>
         </div>
