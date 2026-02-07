@@ -25,6 +25,14 @@ api.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: any) => {
         if (typeof window !== 'undefined') {
+            const originalRequest = error.config;
+
+            // Allow 401 on auth endpoints to be handled by the component
+            if (originalRequest.url?.includes('/auth/login') ||
+                originalRequest.url?.includes('/auth/register')) {
+                return Promise.reject(error);
+            }
+
             if (error.response?.status === 401) {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('user');
@@ -41,6 +49,7 @@ api.interceptors.response.use(
 
         return Promise.reject(error);
     }
+
 );
 
 // Auth endpoints

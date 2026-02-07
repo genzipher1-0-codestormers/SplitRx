@@ -16,6 +16,8 @@ export default function DashboardPage() {
     useEffect(() => {
         if (!loading && !user) {
             router.push('/login');
+        } else if (!loading && user && user.role === 'admin') {
+            router.push('/admin');
         }
     }, [user, loading, router]);
 
@@ -28,18 +30,17 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="mx-auto max-w-7xl">
-            {user.role === 'doctor' && <DoctorDashboard />}
-            {user.role === 'patient' && <PatientDashboard />}
-            {user.role === 'pharmacist' && <PharmacistDashboard />}
+        <div className="min-h-screen bg-gray-900 text-white">
+            <div className="container mx-auto max-w-7xl py-6">
+                {user.role === 'doctor' && <DoctorDashboard />}
+                {user.role === 'patient' && <PatientDashboard />}
+                {user.role === 'pharmacist' && <PharmacistDashboard />}
 
-            {/* Fallback for unknown roles */}
-            {!['doctor', 'patient', 'pharmacist'].includes(user.role) && (
-                <div className="panel p-8 text-center rounded-2xl animate-fade-in">
-                    <div className="flex justify-center mb-4">
-                        <div className="p-4 rounded-2xl bg-[#2a0f1b] border border-[#5a1c2b]">
-                            <ShieldAlert className="w-12 h-12 text-[#dc143c]" />
-                        </div>
+                {/* Fallback for unknown roles */}
+                {!['doctor', 'patient', 'pharmacist', 'admin'].includes(user.role) && (
+                    <div className="p-6 text-center">
+                        <h2 className="text-2xl font-bold text-red-500">Unauthorized Access</h2>
+                        <p className="text-gray-400">Your role ({user.role}) is not authorized to view this dashboard.</p>
                     </div>
                     <h2 className="text-2xl font-bold text-[#dc143c] mb-2">Unauthorized Access</h2>
                     <p className="muted">Your role ({user.role}) is not authorized to view this dashboard.</p>
