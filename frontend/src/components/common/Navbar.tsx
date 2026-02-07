@@ -27,8 +27,16 @@ export default function Navbar() {
             </div>
             {user && (
                 <div className="flex items-center gap-4">
+                    {user.role === 'admin' && (
+                        <button
+                            onClick={() => router.push('/admin')}
+                            className="text-white hover:text-indigo-300 font-medium mr-4 transition-colors"
+                        >
+                            Dashboard
+                        </button>
+                    )}
                     <span className="flex items-center gap-2">
-                        {roleIcons[user.role] || '👤'} <span className="font-medium">{user.fullName}</span>
+                        {roleIcons[user.role] || '👤'} <span className="font-medium">{user.full_name}</span>
                         <span className="text-xs bg-gray-700 px-2 py-1 rounded-full uppercase">{user.role}</span>
                     </span>
                     <button
