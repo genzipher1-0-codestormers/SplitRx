@@ -23,7 +23,11 @@ interface AuthContextType {
   login: (
     email: string,
     password: string,
-  ) => Promise<{ riskScore: number; requiresStepUp: boolean }>;
+  ) => Promise<{
+    riskScore: number;
+    requiresStepUp: boolean;
+    passwordExpired: boolean;
+  }>;
   register: (data: any) => Promise<any>;
   logout: () => Promise<void>;
   loading: boolean;
@@ -37,40 +41,69 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    // Hydrate user from localStorage
-    const stored = localStorage.getItem("user");
-    const token = localStorage.getItem("accessToken");
-    if (stored && token) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch (e) {
-        console.error("Failed to parse user from local storage", e);
-        localStorage.removeItem("user");
+    // Check session validity and freshness on mount
+    const checkSession = async () => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        try {
+          // Determine API URL based on environment or default
+          const API_URL =
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+          const res = await fetch(`${API_URL}/auth/me`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            setUser(data.user);
+
+            if (data.user.passwordExpired) {
+              router.push("/auth/change-password");
+            }
+          } else {
+            // Token invalid or expired
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("user");
+            setUser(null);
+          }
+        } catch (e) {
+          console.error("Session check failed", e);
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+
+    checkSession();
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await authAPI.login({ email, password });
-    // The API returns { user, accessToken, riskScore, requiresStepUp, passwordExpired }
-    const {
-      user: userData,
-      accessToken,
-      riskScore,
-      requiresStepUp,
-      passwordExpired,
-    } = response.data;
+    setLoading(true);
+    try {
+      const response = await authAPI.login({ email, password });
+      // The API returns { user, accessToken, riskScore, requiresStepUp, passwordExpired }
+      const {
+        user: userData,
+        accessToken,
+        riskScore,
+        requiresStepUp,
+        passwordExpired,
+      } = response.data;
 
-    if (passwordExpired) {
-      router.push("/auth/change-password");
-    } else {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
-    }
 
-    return { riskScore, requiresStepUp };
+      if (passwordExpired) {
+        router.push("/auth/change-password");
+      }
+
+      return { riskScore, requiresStepUp, passwordExpired };
+    } finally {
+      setLoading(false);
+    }
   };
 
   const register = async (data: any) => {

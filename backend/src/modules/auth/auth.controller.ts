@@ -75,12 +75,17 @@ export class AuthController {
   }
 
   static async me(req: AuthenticatedRequest, res: Response) {
-    res.json({ user: req.user });
+    try {
+      const user = await authService.getCurrentUser(req.user!.id);
+      res.json({ user });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
   }
 
   static async changePassword(req: AuthenticatedRequest, res: Response) {
     try {
-      const { newPassword } = req.body;
+      const { newPassword, oldPassword } = req.body;
       if (!newPassword || newPassword.length < 8) {
         // Basic validation
         return res
@@ -88,7 +93,7 @@ export class AuthController {
           .json({ error: "Password must be at least 8 characters" });
       }
 
-      await authService.changePassword(req.user!.id, newPassword);
+      await authService.changePassword(req.user!.id, newPassword, oldPassword);
       res.json({ message: "Password changed successfully" });
     } catch (error: any) {
       res.status(400).json({ error: error.message });

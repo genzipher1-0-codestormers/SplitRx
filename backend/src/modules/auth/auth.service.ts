@@ -244,12 +244,39 @@ class AuthService {
 
   private isPasswordExpired(passwordChangedAt: Date | null): boolean {
     if (!passwordChangedAt) return true; // Force change if null
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    return new Date(passwordChangedAt) < thirtyDaysAgo;
+    const oneMinuteAgo = new Date();
+    oneMinuteAgo.setMinutes(oneMinuteAgo.getMinutes() - 1); // 1 minute for testing
+    return new Date(passwordChangedAt) < oneMinuteAgo;
   }
 
-  async changePassword(userId: string, newPassword: string): Promise<void> {
+  async changePassword(
+    userId: string,
+    newPassword: string,
+    oldPassword?: string,
+  ): Promise<void> {
+    // 1. Verify old password if provided (or strictly require it?)
+    // User requested "give me the previous password", so we should verify it.
+    // We need to fetch the user's current hash.
+
+    if (oldPassword) {
+      const userResult = await pool.query(
+        "SELECT password_hash FROM users WHERE id = $1",
+        [userId],
+      );
+      if (userResult.rows.length === 0) throw new Error("User not found");
+
+      const valid = await HashingService.verifyPassword(
+        oldPassword,
+        userResult.rows[0].password_hash,
+      );
+      if (!valid) {
+        throw new Error("Invalid current password");
+      }
+    } else {
+      // If we want to enforce it, uncomment below:
+      throw new Error("Current password is required");
+    }
+
     const passwordHash = await HashingService.hashPassword(newPassword);
 
     await pool.query(
@@ -274,6 +301,27 @@ class AuthService {
       resourceType: "user",
       resourceId: userId,
     });
+  }
+
+  async getCurrentUser(userId: string) {
+    const result = await pool.query(
+      "SELECT id, email, full_name, role, password_changed_at, locked_until FROM users WHERE id = $1",
+      [userId],
+    );
+
+    if (result.rows.length === 0) {
+      throw new Error("User not found");
+    }
+
+    const user = result.rows[0];
+    return {
+      id: user.id,
+      email: user.email,
+      full_name: user.full_name,
+      role: user.role,
+      passwordChangedAt: user.password_changed_at,
+      passwordExpired: this.isPasswordExpired(user.password_changed_at),
+    };
   }
 }
 

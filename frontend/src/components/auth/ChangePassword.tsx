@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authAPI } from "@/services/api";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ChangePassword() {
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,10 +30,16 @@ export default function ChangePassword() {
     setLoading(true);
 
     try {
-      await authAPI.changePassword(newPassword);
-      setMessage("Password changed successfully! Redirecting...");
+      const { logout } = useAuth(); // We need to import useAuth
+      await authAPI.changePassword(newPassword, currentPassword);
+      setMessage("Password changed successfully! Please log in again.");
+
+      // Clear local session as backend revoked it
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+
       setTimeout(() => {
-        router.push("/dashboard/patient"); // Or determine dashboard based on role
+        router.push("/login");
       }, 2000);
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to change password");
@@ -53,6 +61,21 @@ export default function ChangePassword() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
+            <div className="mb-4">
+              <label htmlFor="current-password" className="sr-only">
+                Current Password
+              </label>
+              <input
+                id="current-password"
+                name="currentPassword"
+                type="password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Current Password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+              />
+            </div>
             <div>
               <label htmlFor="new-password" className="sr-only">
                 New Password
@@ -69,10 +92,7 @@ export default function ChangePassword() {
               />
             </div>
             <div>
-              <label
-                htmlFor="confirm-password"
-                classNpasswordExpiredame="sr-only"
-              >
+              <label htmlFor="confirm-password" className="sr-only">
                 Confirm New Password
               </label>
               <input

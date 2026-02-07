@@ -52,8 +52,8 @@ export const authAPI = {
   register: (data: any) => api.post("/auth/register", data),
   login: (data: any) => api.post("/auth/login", data),
   logout: () => api.post("/auth/logout"),
-  changePassword: (newPassword: string) =>
-    api.post("/auth/change-password", { newPassword }),
+  changePassword: (newPassword: string, oldPassword?: string) =>
+    api.post("/auth/change-password", { newPassword, oldPassword }),
 };
 
 // Prescription endpoints
