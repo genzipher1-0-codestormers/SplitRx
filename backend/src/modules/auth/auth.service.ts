@@ -23,11 +23,12 @@ class AuthService {
     async register(input: RegisterInput) {
         // Check if email exists
         const existing = await pool.query(
-            'SELECT id FROM users WHERE email = $1',
+            'SELECT id, is_active FROM users WHERE email = $1',
             [input.email]
         );
 
-        if (existing.rows.length > 0) {
+        // If email exists and is active, reject
+        if (existing.rows.length > 0 && existing.rows[0].is_active) {
             throw new Error('Email already registered');
         }
 
@@ -38,10 +39,39 @@ class AuthService {
         const { publicKey, privateKey } = SigningService.generateKeyPair();
 
         // Encrypt private key with user's password-derived key
-        // In production: use a proper KMS
         const { encryptionService } = require('../../crypto/encryption');
         const encryptedPrivateKey = encryptionService.encrypt(privateKey);
 
+        // If email exists but is deactivated (erased account), reactivate it
+        if (existing.rows.length > 0 && !existing.rows[0].is_active) {
+            const userId = existing.rows[0].id;
+            await pool.query(
+                `UPDATE users SET 
+                    password_hash = $1, 
+                    full_name = $2, 
+                    role = $3, 
+                    public_key = $4, 
+                    private_key_encrypted = $5, 
+                    is_active = true,
+                    failed_login_attempts = 0,
+                    locked_until = NULL
+                 WHERE id = $6`,
+                [passwordHash, input.full_name, input.role, publicKey, JSON.stringify(encryptedPrivateKey), userId]
+            );
+
+            await auditService.log({
+                actorId: userId,
+                actorRole: input.role,
+                action: 'USER_REACTIVATED',
+                resourceType: 'user',
+                resourceId: userId,
+                metadata: { previouslyErased: true },
+            });
+
+            return { id: userId, email: input.email, role: input.role };
+        }
+
+        // New user registration
         const userId = uuid();
 
         await pool.query(

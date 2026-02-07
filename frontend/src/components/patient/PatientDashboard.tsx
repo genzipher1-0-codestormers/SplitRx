@@ -86,13 +86,37 @@ export default function PatientDashboard() {
         }
     };
 
+    const downloadMyData = async () => {
+        try {
+            const response = await consentAPI.exportMyData();
+            const dataStr = JSON.stringify(response.data, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `my_medical_data_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            toast.success('Data exported successfully!');
+        } catch (error) {
+            toast.error('Failed to export data');
+        }
+    };
+
     const eraseAllData = async () => {
         if (!confirm('⚠️ This will PERMANENTLY delete ALL your medical data. This cannot be undone. Continue?')) return;
         if (!confirm('Are you absolutely sure? Type YES to confirm.')) return;
         try {
             await consentAPI.eraseAllData();
-            toast.success('All data erased (GDPR Art. 17)');
-            loadData();
+            toast.success('All data erased (GDPR Art. 17). You will be logged out.');
+            // Clear local storage and redirect to login after a short delay
+            setTimeout(() => {
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }, 2000);
         } catch (error) {
             toast.error('Failed to erase data');
         }
@@ -129,8 +153,8 @@ export default function PatientDashboard() {
                     <button
                         key={tab.id}
                         className={`px-4 py-2 rounded font-medium transition ${activeTab === tab.id
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                             }`}
                         onClick={() => setActiveTab(tab.id)}
                     >
@@ -258,7 +282,7 @@ export default function PatientDashboard() {
                     <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
                         <h3 className="text-lg font-semibold text-white mb-2">📤 Export My Data (GDPR Art. 20)</h3>
                         <p className="text-gray-400 text-sm mb-4">Download all your medical data in a portable JSON format.</p>
-                        <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition">
+                        <button onClick={downloadMyData} className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition">
                             Download My Data
                         </button>
                     </div>

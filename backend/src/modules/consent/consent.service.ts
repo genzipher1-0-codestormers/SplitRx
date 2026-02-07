@@ -82,36 +82,71 @@ class ConsentService {
      * Instead of finding all records, we make them unreadable
      */
     async requestDataDeletion(patientId: string) {
-        // In a full implementation, we would destroy the patient's
-        // encryption key, making all their encrypted data permanently unreadable.
-        // For this demo, we'll mark prescriptions and revoke all consents.
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
 
-        await pool.query(
-            "UPDATE prescriptions SET status = 'cancelled' WHERE patient_id = $1",
-            [patientId]
-        );
+            // 1. Cancel Prescriptions
+            await client.query(
+                "UPDATE prescriptions SET status = 'cancelled' WHERE patient_id = $1",
+                [patientId]
+            );
 
-        await pool.query(
-            "UPDATE consent_records SET status = 'revoked', revoked_at = NOW() WHERE patient_id = $1 AND status = 'active'",
-            [patientId]
-        );
+            // 2. Revoke Consents
+            await client.query(
+                "UPDATE consent_records SET status = 'revoked', revoked_at = NOW() WHERE patient_id = $1 AND status = 'active'",
+                [patientId]
+            );
 
-        await pool.query(
-            "UPDATE users SET is_active = false WHERE id = $1",
-            [patientId]
-        );
+            // 3. Deactivate User
+            await client.query(
+                "UPDATE users SET is_active = false WHERE id = $1",
+                [patientId]
+            );
 
-        await auditService.log({
-            actorId: patientId,
-            actorRole: 'patient',
-            action: 'DATA_DELETION_REQUESTED',
-            resourceType: 'user',
-            resourceId: patientId,
-            resourceOwnerId: patientId,
-            metadata: { gdprArticle: '17', method: 'crypto_shredding' },
-        });
+            // 4. Audit Log
+            await auditService.log({
+                actorId: patientId,
+                actorRole: 'patient',
+                action: 'DATA_DELETION_REQUESTED',
+                resourceType: 'user',
+                resourceId: patientId,
+                resourceOwnerId: patientId,
+                metadata: { gdprArticle: '17', method: 'crypto_shredding' },
+            }, client);
 
-        return { message: 'Data deletion request processed. All data has been made inaccessible.' };
+            await client.query('COMMIT');
+            return { message: 'Data deletion request processed. All data has been made inaccessible.' };
+
+        } catch (error: any) {
+            await client.query('ROLLBACK');
+            console.error('Data deletion failed:', error);
+            // Throw a more descriptive error if possible
+            throw new Error(`Erasure failed: ${error.message}`);
+        } finally {
+            client.release();
+        }
+    }
+
+    /**
+     * Export all user data (GDPR Art. 20 - Right to Data Portability)
+     */
+    async exportMyData(patientId: string) {
+        // Get all user data
+        const [userResult, prescriptionsResult, consentsResult, auditResult] = await Promise.all([
+            pool.query('SELECT id, email, full_name, role, created_at FROM users WHERE id = $1', [patientId]),
+            pool.query('SELECT id, prescription_number, doctor_id, status, created_at, expires_at FROM prescriptions WHERE patient_id = $1', [patientId]),
+            pool.query('SELECT id, granted_to, purpose, data_categories, status, granted_at, revoked_at, expires_at FROM consent_records WHERE patient_id = $1', [patientId]),
+            pool.query('SELECT id, action, resource_type, resource_id, metadata, timestamp FROM audit_log WHERE resource_owner_id = $1 ORDER BY timestamp DESC LIMIT 100', [patientId]),
+        ]);
+
+        return {
+            exportedAt: new Date().toISOString(),
+            user: userResult.rows[0] || null,
+            prescriptions: prescriptionsResult.rows,
+            consents: consentsResult.rows,
+            auditLogs: auditResult.rows,
+        };
     }
 }
 
