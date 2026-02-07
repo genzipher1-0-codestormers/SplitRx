@@ -17,15 +17,16 @@ router.get(
     }
 );
 
+const getMyLogs = async (req: AuthenticatedRequest, res: Response) => {
+    const logs = await auditService.getLogsForUser(req.user!.id);
+    res.json({ logs });
+};
+
 // Get my audit logs (GDPR Art. 15)
-router.get(
-    '/my-logs',
-    authenticate,
-    async (req: AuthenticatedRequest, res: Response) => {
-        const logs = await auditService.getLogsForUser(req.user!.id);
-        res.json({ logs });
-    }
-);
+router.get('/my-logs', authenticate, getMyLogs);
+
+// Backward-compatible alias
+router.get('/my', authenticate, getMyLogs);
 
 // Get logs for a specific prescription
 router.get(

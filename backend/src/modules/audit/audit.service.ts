@@ -158,8 +158,8 @@ class AuditService {
      */
     async getLogsForResource(resourceId: string): Promise<any[]> {
         const result = await pool.query(
-            `SELECT actor_id, actor_role, action, resource_type, 
-                    metadata, timestamp, entry_hash
+            `SELECT id, actor_id, actor_role, action, resource_type, 
+                    resource_id, resource_owner_id, metadata, timestamp, entry_hash
              FROM audit_log 
              WHERE resource_id = $1 
              ORDER BY timestamp DESC`,
@@ -173,8 +173,8 @@ class AuditService {
      */
     async getLogsForUser(userId: string): Promise<any[]> {
         const result = await pool.query(
-            `SELECT action, resource_type, resource_id, 
-                    metadata, timestamp
+            `SELECT id, action, resource_type, resource_id, resource_owner_id,
+                    metadata, timestamp, entry_hash
              FROM audit_log 
              WHERE resource_owner_id = $1 
              ORDER BY timestamp DESC
