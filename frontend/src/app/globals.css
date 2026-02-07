@@ -13,7 +13,157 @@
   --panel: #0e2a4a;
   --panel-strong: #0b1d38;
   --border: #1c3c63;
+  --accent-gradient: linear-gradient(135deg, #3a6ea5 0%, #2e8b57 100%);
+  --glow-steel: rgba(58, 110, 165, 0.5);
+  --glow-emerald: rgba(46, 139, 87, 0.4);
 }
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px var(--glow-steel); }
+  50% { box-shadow: 0 0 35px var(--glow-emerald); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Animation utility classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.6s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Staggered animation delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
 
 body {
   background:
@@ -33,96 +183,414 @@ body {
   padding: 28px 20px 64px;
 }
 
+/* ========================================
+   PANEL COMPONENTS
+   ======================================== */
+
 .panel {
   background: rgba(14, 42, 74, 0.78);
   border: 1px solid var(--border);
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 25px 70px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+
+.panel:hover {
+  box-shadow: 
+    0 30px 80px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-color: rgba(58, 110, 165, 0.4);
 }
 
 .panel-strong {
   background: rgba(11, 29, 56, 0.9);
   border: 1px solid var(--border);
+  transition: all 0.3s ease;
 }
+
+.panel-glow {
+  background: rgba(14, 42, 74, 0.78);
+  border: 1px solid var(--border);
+  box-shadow: 
+    0 25px 70px rgba(0, 0, 0, 0.35),
+    0 0 40px rgba(58, 110, 165, 0.15);
+  backdrop-filter: blur(12px);
+}
+
+/* ========================================
+   INPUT COMPONENTS
+   ======================================== */
 
 .input {
   width: 100%;
   background: rgba(7, 24, 44, 0.85);
   border: 1px solid #2b4f7a;
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 12px;
+  padding: 12px 14px;
   color: #ffffff;
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
 }
 
 .input:focus {
   outline: none;
   border-color: var(--steel);
-  box-shadow: 0 0 0 2px rgba(58, 110, 165, 0.35);
+  box-shadow: 
+    0 0 0 3px rgba(58, 110, 165, 0.25),
+    0 0 20px rgba(58, 110, 165, 0.15);
+  background: rgba(7, 24, 44, 0.95);
+}
+
+.input::placeholder {
+  color: rgba(224, 255, 255, 0.4);
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon .input {
+  padding-left: 44px;
+}
+
+.input-with-icon .input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(224, 255, 255, 0.5);
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+
+.input-with-icon:focus-within .input-icon {
+  color: var(--steel);
+}
+
+/* ========================================
+   BUTTON COMPONENTS
+   ======================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 12px 20px;
+  transition: all 0.25s ease;
+  cursor: pointer;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, #3a6ea5 0%, #2e8b57 100%);
-  border: 1px solid #2f6c9f;
+  border: 1px solid rgba(58, 110, 165, 0.6);
   color: #ffffff;
-  box-shadow: 0 10px 30px rgba(58, 110, 165, 0.4);
+  box-shadow: 
+    0 8px 25px rgba(58, 110, 165, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .btn-primary:hover {
-  filter: brightness(1.06);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 35px rgba(58, 110, 165, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  filter: brightness(1.08);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-secondary {
-  background: #102f55;
+  background: rgba(16, 47, 85, 0.8);
   border: 1px solid #2b4f7a;
   color: #e0ffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary:hover {
-  background: #143863;
+  background: rgba(20, 56, 99, 0.9);
+  border-color: rgba(58, 110, 165, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 .btn-danger {
-  background: #dc143c;
-  border: 1px solid #9b0e2a;
+  background: linear-gradient(135deg, #dc143c 0%, #b01030 100%);
+  border: 1px solid rgba(220, 20, 60, 0.6);
   color: #ffffff;
+  box-shadow: 0 6px 20px rgba(220, 20, 60, 0.3);
 }
 
 .btn-danger:hover {
-  filter: brightness(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(220, 20, 60, 0.4);
+  filter: brightness(1.08);
 }
 
 .btn-outline {
   background: transparent;
-  border: 1px solid #3a6ea5;
+  border: 1px solid rgba(58, 110, 165, 0.6);
   color: #e0ffff;
 }
 
 .btn-outline:hover {
-  background: rgba(58, 110, 165, 0.12);
+  background: rgba(58, 110, 165, 0.15);
+  border-color: var(--steel);
+  transform: translateY(-1px);
 }
 
-.muted {
-  color: rgba(224, 255, 255, 0.68);
+.btn-ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(224, 255, 255, 0.8);
 }
+
+.btn-ghost:hover {
+  background: rgba(58, 110, 165, 0.1);
+  color: #ffffff;
+}
+
+/* ========================================
+   TAB COMPONENTS
+   ======================================== */
 
 .tab {
   border: 1px solid transparent;
-  background: rgba(16, 47, 85, 0.7);
+  background: rgba(16, 47, 85, 0.6);
   color: rgba(224, 255, 255, 0.75);
   border-radius: 999px;
-  padding: 8px 16px;
+  padding: 10px 20px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
 
 .tab:hover {
-  border-color: rgba(58, 110, 165, 0.6);
+  border-color: rgba(58, 110, 165, 0.5);
   color: #ffffff;
+  background: rgba(16, 47, 85, 0.8);
+  transform: translateY(-1px);
 }
 
 .tab-active {
   background: linear-gradient(135deg, rgba(58, 110, 165, 0.95), rgba(46, 139, 87, 0.9));
   color: #ffffff;
-  border-color: rgba(58, 110, 165, 0.9);
-  box-shadow: 0 12px 25px rgba(46, 139, 87, 0.25);
+  border-color: rgba(58, 110, 165, 0.6);
+  box-shadow: 
+    0 8px 25px rgba(46, 139, 87, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* ========================================
+   BADGE COMPONENTS
+   ======================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.badge-default {
+  background: rgba(16, 47, 85, 0.8);
+  border: 1px solid #2b4f7a;
+  color: #e0ffff;
+}
+
+.badge-success {
+  background: rgba(46, 139, 87, 0.2);
+  border: 1px solid rgba(46, 139, 87, 0.5);
+  color: #4ade80;
+}
+
+.badge-warning {
+  background: rgba(180, 83, 9, 0.2);
+  border: 1px solid rgba(180, 83, 9, 0.5);
+  color: #fbbf24;
+}
+
+.badge-danger {
+  background: rgba(220, 20, 60, 0.2);
+  border: 1px solid rgba(220, 20, 60, 0.5);
+  color: #f87171;
+}
+
+.badge-info {
+  background: rgba(58, 110, 165, 0.2);
+  border: 1px solid rgba(58, 110, 165, 0.5);
+  color: #60a5fa;
+}
+
+/* ========================================
+   CARD COMPONENTS
+   ======================================== */
+
+.card {
+  background: rgba(14, 42, 74, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(58, 110, 165, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-success {
+  border-left: 4px solid #2e8b57;
+}
+
+.card-warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.card-danger {
+  border-left: 4px solid #dc143c;
+}
+
+.card-info {
+  border-left: 4px solid #3a6ea5;
+}
+
+/* ========================================
+   TEXT UTILITIES
+   ======================================== */
+
+.muted {
+  color: rgba(224, 255, 255, 0.68);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #3a6ea5 0%, #2e8b57 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ========================================
+   ICON COMPONENTS
+   ======================================== */
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(58, 110, 165, 0.2), rgba(46, 139, 87, 0.2));
+  border: 1px solid rgba(58, 110, 165, 0.3);
+}
+
+.icon-container-sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.icon-container-lg {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+.skeleton {
+  background: linear-gradient(90deg, 
+    rgba(16, 47, 85, 0.6) 0%, 
+    rgba(58, 110, 165, 0.3) 50%, 
+    rgba(16, 47, 85, 0.6) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(7, 26, 51, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(58, 110, 165, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(58, 110, 165, 0.7);
+}
+
+/* ========================================
+   DIVIDER
+   ======================================== */
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(58, 110, 165, 0.4), 
+    transparent
+  );
+  margin: 24px 0;
+}
+
+/* ========================================
+   FOCUS VISIBLE
+   ======================================== */
+
+*:focus-visible {
+  outline: 2px solid var(--steel);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   SELECTION
+   ======================================== */
+
+::selection {
+  background: rgba(58, 110, 165, 0.4);
+  color: #ffffff;
 }
