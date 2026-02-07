@@ -19,8 +19,13 @@ async function seedAdmin() {
             process.exit(0);
         }
 
-        const email = process.env.ADMIN_EMAIL || 'admin@splitrx.com';
-        const password = process.env.ADMIN_PASSWORD || 'Admin123!';
+        if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+            console.error('❌ ADMIN_EMAIL and ADMIN_PASSWORD environment variables are required.');
+            process.exit(1);
+        }
+
+        const email = process.env.ADMIN_EMAIL;
+        const password = process.env.ADMIN_PASSWORD;
         const fullName = 'System Administrator';
 
         console.log(`Creating admin user: ${email}`);
