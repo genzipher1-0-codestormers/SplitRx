@@ -143,7 +143,10 @@ class AuthService {
         );
 
         // Generate JWT access token (short-lived)
-        const secret: any = process.env.JWT_SECRET || 'fallback';
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            throw new Error('JWT_SECRET environment variable is required');
+        }
         const accessToken = jwt.sign(
             {
                 sub: user.id,
@@ -204,7 +207,10 @@ class AuthService {
         );
 
         // Issue new access token
-        const secret: any = process.env.JWT_SECRET || 'fallback';
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            throw new Error('JWT_SECRET environment variable is required');
+        }
         const accessToken = jwt.sign(
             {
                 sub: session.user_id,
