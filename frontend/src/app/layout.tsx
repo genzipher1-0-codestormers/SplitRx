@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          {/* Navbar could be here or inside specific layouts */}
+          <Navbar />
           {children}
         </Providers>
       </body>

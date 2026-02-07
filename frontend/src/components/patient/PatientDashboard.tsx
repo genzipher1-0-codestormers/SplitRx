@@ -126,11 +126,11 @@ export default function PatientDashboard() {
                                     <span className="text-gray-400 text-sm">{new Date(rx.prescribedAt).toLocaleDateString()}</span>
                                 </div>
                                 <p className="text-white"><strong className="text-gray-400">Doctor:</strong> {rx.doctorName}</p>
-                                <p className="text-white"><strong className="text-gray-400">Diagnosis:</strong> {rx.data?.diagnosis}</p>
+                                <p className="text-white"><strong className="text-gray-400">Diagnosis:</strong> {(rx.data || rx.payload)?.diagnosis}</p>
 
                                 <div className="mt-3 bg-gray-900/50 p-2 rounded">
                                     <strong className="text-gray-300 text-sm block mb-1">Medications:</strong>
-                                    {rx.data?.medications.map((med: any, i: number) => (
+                                    {(rx.data || rx.payload)?.medications?.map((med: any, i: number) => (
                                         <div key={i} className="text-sm text-gray-200 ml-2">
                                             • {med.name} — {med.dosage} ({med.frequency})
                                         </div>
@@ -139,7 +139,7 @@ export default function PatientDashboard() {
 
                                 <div className="mt-3 flex justify-between items-end">
                                     <p className="text-xs text-gray-600 font-mono">
-                                        Hash: {rx.contentHash.substring(0, 12)}...
+                                        Hash: {(rx.contentHash || rx.payloadHash || '').substring(0, 12)}...
                                     </p>
                                     {rx.status === 'active' && (
                                         <button
