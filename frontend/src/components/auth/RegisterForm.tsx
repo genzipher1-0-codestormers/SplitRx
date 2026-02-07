@@ -11,7 +11,7 @@ export default function RegisterForm() {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        fullName: '',
+        full_name: '',
         role: 'patient',
         licenseNumber: '' // Only for doctors/pharmacists
     });
@@ -46,9 +46,9 @@ export default function RegisterForm() {
                     <div>
                         <label className="block text-gray-300 mb-1">Full Name</label>
                         <input
-                            name="fullName"
+                            name="full_name"
                             type="text"
-                            value={formData.fullName}
+                            value={formData.full_name}
                             onChange={handleChange}
                             required
                             className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white focus:outline-none focus:border-blue-500"

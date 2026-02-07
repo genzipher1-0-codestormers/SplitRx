@@ -68,9 +68,9 @@ export const consentAPI = {
 
 // Audit endpoints
 export const auditAPI = {
-    getMyAuditTrail: () => api.get('/audit/my'),
-    getPrescriptionAudit: (id: string) => api.get(`/audit/prescription/${id}`),
-    verifyIntegrity: () => api.get('/audit/verify-integrity')
+    getMyAuditTrail: () => api.get('/audit/my-logs'),
+    getPrescriptionAudit: (id: string) => api.get(`/audit/resource/${id}`),
+    verifyIntegrity: () => api.get('/audit/verify')
 };
 
 export default api;
