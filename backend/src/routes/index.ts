@@ -4,6 +4,7 @@ import prescriptionRoutes from '../modules/prescription/prescription.routes';
 import dispensingRoutes from '../modules/dispensing/dispensing.routes';
 import auditRoutes from '../modules/audit/audit.routes';
 import consentRoutes from '../modules/consent/consent.routes';
+import adminRoutes from '../modules/admin/admin.routes';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.use('/prescriptions', prescriptionRoutes);
 router.use('/dispensing', dispensingRoutes);
 router.use('/audit', auditRoutes);
 router.use('/consent', consentRoutes);
+router.use('/admin', adminRoutes);
 
 // Health check
 router.get('/health', (req, res) => {

@@ -14,17 +14,11 @@ export class EncryptionService {
 
     constructor() {
         const key = process.env.ENCRYPTION_MASTER_KEY;
-        if (!key || key.length < 32) {
-            // In a real app, this should probably throw, but for dev we can warn or wait for env
-            // throw new Error('ENCRYPTION_MASTER_KEY must be at least 32 characters');
-            // For now let's just create a dummy key if missing to avoid crash during setup, 
-            // but log a warning.
-            if (!key) {
-                console.warn('WARNING: ENCRYPTION_MASTER_KEY is not set. Using a dummy key for development.');
-                this.masterKey = crypto.randomBytes(32);
-            } else {
-                this.masterKey = crypto.scryptSync(key, 'splitrx-salt', 32);
-            }
+        if (!key) {
+            throw new Error('ENCRYPTION_MASTER_KEY environment variable is required (minimum 32 characters)');
+        }
+        if (key.length < 32) {
+            throw new Error('ENCRYPTION_MASTER_KEY must be at least 32 characters');
         } else {
             // Derive a proper 32-byte key from the master key
             this.masterKey = crypto.scryptSync(key, 'splitrx-salt', 32);

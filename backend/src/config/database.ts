@@ -1,5 +1,7 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
 
@@ -11,11 +13,17 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD,
     max: 20,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
-    // SSL in production
-    ...(process.env.NODE_ENV === 'production' && {
-        ssl: { rejectUnauthorized: true }
-    })
+    connectionTimeoutMillis: 10000,
+    // SSL Configuration
+    // SSL Configuration
+    ssl: process.env.DB_SSL === 'true'
+        ? {
+            rejectUnauthorized: true,
+            ca: process.env.DB_SSL_CA_PATH
+                ? fs.readFileSync(path.resolve(process.cwd(), process.env.DB_SSL_CA_PATH)).toString()
+                : process.env.DB_SSL_CA,
+        }
+        : undefined,
 });
 
 // Test connection
