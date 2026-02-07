@@ -70,3 +70,7 @@ A robust, secure REST API handling business logic and data integrity.
 | **Containerization** | **Docker** | Application containerization for consistent environments. |
 | **Orchestration** | **Docker Compose** | Multi-container Docker applications definition. |
 | **CI/CD** | **GitHub Actions** (Planned) | Automated testing and deployment pipelines. |
+
+---
+
+*Last updated: February 8, 2026*

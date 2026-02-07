@@ -1,4 +1,3 @@
-
 # 📖 SplitRx User Manual
 
 Welcome to **SplitRx**, the secure way to manage medical prescriptions. 
