@@ -30,10 +30,11 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="mx-auto max-w-7xl">
-            {user.role === 'doctor' && <DoctorDashboard />}
-            {user.role === 'patient' && <PatientDashboard />}
-            {user.role === 'pharmacist' && <PharmacistDashboard />}
+        <div className="min-h-screen bg-gray-900 text-white">
+            <div className="container mx-auto max-w-7xl py-6">
+                {user.role === 'doctor' && <DoctorDashboard />}
+                {user.role === 'patient' && <PatientDashboard />}
+                {user.role === 'pharmacist' && <PharmacistDashboard />}
 
             {/* Fallback for unknown roles */}
             {!['doctor', 'patient', 'pharmacist'].includes(user.role) && (
