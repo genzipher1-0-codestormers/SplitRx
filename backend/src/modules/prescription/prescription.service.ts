@@ -5,13 +5,18 @@ import { SigningService } from '../../crypto/signing';
 import { auditService } from '../audit/audit.service';
 import QRCode from 'qrcode';
 
-interface CreatePrescriptionInput {
-    doctorId: string;
-    patientId: string;
-    medicationName: string;
+interface MedicationInput {
+    name: string;
     dosage: string;
     frequency: string;
     duration: string;
+}
+
+interface CreatePrescriptionInput {
+    doctorId: string;
+    patientId: string;
+    diagnosis: string;
+    medications: MedicationInput[];
     notes?: string;
     expiresInDays: number;
 }
@@ -29,10 +34,8 @@ class PrescriptionService {
     async create(input: CreatePrescriptionInput, ipAddress: string, userAgent: string) {
         // Build prescription payload
         const payload = {
-            medication_name: input.medicationName,
-            dosage: input.dosage,
-            frequency: input.frequency,
-            duration: input.duration,
+            diagnosis: input.diagnosis,
+            medications: input.medications,
             notes: input.notes || '',
             prescribed_at: new Date().toISOString(),
             doctor_id: input.doctorId,
@@ -160,16 +163,20 @@ class PrescriptionService {
                 row.encryption_tag
             );
 
+            const data = JSON.parse(decryptedPayload);
+
             return {
                 id: row.id,
                 prescriptionNumber: row.prescription_number,
                 doctorName: row.doctor_name,
-                payload: JSON.parse(decryptedPayload),
+                data,
+                payload: data,
                 status: row.status,
                 prescribedAt: row.prescribed_at,
                 expiresAt: row.expires_at,
                 dispensedAt: row.dispensed_at,
                 payloadHash: row.payload_hash,
+                contentHash: row.payload_hash,
                 isSigned: !!row.doctor_signature,
             };
         });

@@ -6,14 +6,21 @@ export class PrescriptionController {
 
     static async create(req: AuthenticatedRequest, res: Response) {
         try {
+            const medications = req.body.medications || [
+                {
+                    name: req.body.medication_name,
+                    dosage: req.body.dosage,
+                    frequency: req.body.frequency,
+                    duration: req.body.duration,
+                },
+            ];
+
             const result = await prescriptionService.create(
                 {
                     doctorId: req.user!.id,
                     patientId: req.body.patient_id,
-                    medicationName: req.body.medication_name,
-                    dosage: req.body.dosage,
-                    frequency: req.body.frequency,
-                    duration: req.body.duration,
+                    diagnosis: req.body.diagnosis || '',
+                    medications,
                     notes: req.body.notes,
                     expiresInDays: req.body.expires_in_days,
                 },
