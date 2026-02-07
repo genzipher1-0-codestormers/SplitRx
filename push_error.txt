@@ -1,0 +1,153 @@
+git : remote: 
+error: GH013: 
+Repository rule 
+violations found 
+for refs/heads/Dul
+an_.        
+At line:1 char:1
++ git push origin 
+Dulan_ 2>&1 | 
+Out-File 
+push_error.txt 
+-Encoding ascii
++ ~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + 
+CategoryInfo      
+        : 
+NotSpeci    fied: 
+(remote: er    
+ror: ...Dulan_.   
+         :String) 
+[]    , 
+RemoteException
+    + 
+FullyQualifiedE   
+ rrorId : 
+NativeCo    
+mmandError
+ 
+remote: 
+remote: - GITHUB 
+PUSH PROTECTION   
+     
+remote:   ????????
+??????????????????
+??????????????????
+??????????????????
+??????????????????
+??????????????????
+??????????????????
+???????        
+remote:     
+Resolve the 
+following 
+violations before 
+pushing again     
+   
+remote: 
+remote:     - 
+Push cannot 
+contain secrets   
+     
+remote: 
+remote:           
+  
+remote:      (?) 
+Learn how to 
+resolve a blocked 
+push        
+remote:      https
+://docs.github.com
+/code-security/sec
+ret-scanning/worki
+ng-with-secret-sca
+nning-and-push-pro
+tection/working-wi
+th-push-protection
+-from-the-command-
+line#resolving-a-b
+locked-push       
+ 
+remote:           
+  
+remote:      (?) 
+This repository 
+does not have 
+Secret Scanning 
+enabled, but is 
+eligible. Enable 
+Secret Scanning 
+to view and 
+manage detected 
+secrets.        
+remote:      
+Visit the 
+repository 
+settings page, htt
+ps://github.com/ge
+nzipher1-0-codesto
+rmers/SplitRx/sett
+ings/security_anal
+ysis        
+remote:           
+  
+remote:           
+  
+remote:       
+?????? Aiven 
+Service Password ?
+??????????????????
+??????????????????
+??????????????????
+??????????????????
+???????????       
+ 
+remote:        
+locations:        
+remote:          
+- commit: 9785db47
+5ac7b97bfcb781d0a6
+7de4f78c753ba2    
+    
+remote:           
+ path: 
+.env.example:6    
+    
+remote:           
+  
+remote:        
+(?) To push, 
+remove secret 
+from commit(s) or 
+follow this URL 
+to allow the 
+secret.        
+remote:        htt
+ps://github.com/ge
+nzipher1-0-codesto
+rmers/SplitRx/secu
+rity/secret-scanni
+ng/unblock-secret/
+39LZxjePCTKyq5kGzB
+SQ1zaHIwv        
+remote:           
+  
+remote: 
+remote: 
+To https://github.
+com/genzipher1-0-c
+odestormers/SplitR
+x.git
+ ! [remote 
+rejected] Dulan_ 
+-> Dulan_ (push 
+declined due to 
+repository rule 
+violations)
+error: failed to 
+push some refs to 
+'https://github.co
+m/genzipher1-0-cod
+estormers/SplitRx.
+git'
