@@ -1,110 +1,132 @@
 
 # 🔐 SplitRx — Tamper-Proof Prescription System
 
-> **Tagline:** "Every pill verified. Every prescription signed. Every access logged."
+> **"Every pill verified. Every prescription signed. Every access logged."**
 
-## 🚀 Project Overview
+## 🚀 Overview
 
-**SplitRx** is a next-generation medical system designed to fix security holes in how prescriptions are handled today. It protects against identity theft, fake prescriptions, and data leaks.
+**SplitRx** is a next-generation medical prescription system designed to eliminate security vulnerabilities in how prescriptions are handled. It protects against identity theft, prescription fraud, and data leaks.
 
-### How It Works (Simple Explanation)
-1.  **Doctors** write prescriptions that are digitally signed (like a secure digital wax seal).
-2.  **Patients** receive them instantly on their phone/dashboard.
-3.  **Pharmacists** scan a QR code to verify the "digital seal" hasn't been broken before giving out medicine.
+### How It Works
+1. **Doctors** write prescriptions that are digitally signed (like a secure digital wax seal)
+2. **Patients** receive them instantly on their dashboard
+3. **Pharmacists** scan a QR code to verify authenticity before dispensing medicine
 
-Everything is **Encrypted** (scrambled so hackers can't read it) and logged in an **Audit Trail** (a permanent history book that no one can erase).
+Everything is **encrypted** and logged in a **tamper-proof audit trail**.
 
 ---
 
 ## ✨ Key Features
--   **For Doctors**: Easy-to-use digital prescription pad.
--   **For Patients**: Full control over your medical data. "Right to Erasure" button included.
--   **For Pharmacists**: One-click verification to stop fraud.
--   **For Admins**: 
-    -   **Audit Integrity Check**: Verify that the history logs haven't been hacked.
-    -   **Database Viewer**: View live system data directly from the dashboard.
+
+| Role | Features |
+|------|----------|
+| **Doctors** | Digital prescription pad with cryptographic signatures |
+| **Patients** | Full data control, privacy controls, Right to Erasure |
+| **Pharmacists** | One-click QR verification to prevent fraud |
+| **Admins** | Audit integrity checks, database viewer, user management |
 
 ---
 
-## 🛠️ How to Run This Project (Local Setup)
-
-This project has two parts: the **Backend** (Server) and the **Frontend** (User Interface). You will need to start both.
+## 🛠️ Quick Start
 
 ### Prerequisites
--   **Node.js** (Version 20 or higher) installed on your computer.
+- **Node.js** v20+ 
+- **PostgreSQL** database
 
-### Step 1: Install & Setup
-1.  **Download the code**:
-    ```bash
-    git clone https://github.com/yourusername/splitrx.git
-    cd splitrx
-    ```
+### Installation
 
-2.  **Setup the Backend**:
-    ```bash
-    cd backend
-    npm install
-    # Ensure your .env file is configured (ask admin for keys)
-    ```
+```bash
+# Clone the repository
+git clone https://github.com/genzipher1-0-codestormers/SplitRx.git
+cd SplitRx
 
-3.  **Setup the Frontend**:
-    ```bash
-    cd ../frontend
-    npm install
-    # Ensure your .env.local file is configured
-    ```
+# Setup Backend
+cd backend
+npm install
+cp .env.example .env  # Configure your database and secrets
 
-### Step 2: Start the Application
-You need to open **two terminal windows**.
+# Setup Frontend
+cd ../frontend
+npm install
+cp .env.example .env.local  # Configure API URL
+```
 
-**Terminal 1 (Backend):**
+### Running Locally
+
+Open two terminal windows:
+
+**Terminal 1 — Backend:**
 ```bash
 cd backend
 npm run dev
+# Wait for "SplitRx Server Running"
 ```
-*Wait until you see "SplitRx Server Running"*
 
-**Terminal 2 (Frontend):**
+**Terminal 2 — Frontend:**
 ```bash
 cd frontend
 npm run dev -- -p 3001
 ```
 
-### Step 3: Open in Browser
--   **Frontend (App)**: Go to [http://localhost:3001](http://localhost:3001)
--   **Backend (API)**: Running at [http://localhost:3000](http://localhost:3000)
+### Access Points
+- **Frontend**: http://localhost:3001
+- **Backend API**: http://localhost:3000
+
+---
+
+## 🐳 Docker Deployment
+
+```bash
+# Production deployment
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+See [deploy.sh](deploy.sh) for automated server deployment.
 
 ---
 
 ## 📚 Documentation
--   **[User Guide](USER_GUIDE.md)**: Detailed step-by-step instructions for Doctors, Patients, Pharmacists, and Admins.
+
+| Document | Description |
+|----------|-------------|
+| [USER_GUIDE.md](USER_GUIDE.md) | Step-by-step instructions for all user roles |
+| [SECURITY.md](SECURITY.md) | Complete security architecture (8 layers) |
+| [TECH_STACK.md](TECH_STACK.md) | Technical stack and architecture overview |
 
 ---
 
-## 🔧 Technical Details (For Developers)
--   **Encryption**: AES-256-GCM for data at rest.
--   **Signatures**: RSA-SHA256 for prescription authenticity.
--   **Database**: PostgreSQL (Managed).
--   **Frameworks**: Express.js (Backend) and Next.js (Frontend).
+## 🔧 Technical Details
 
-## 🚨 Administrative Tools (For Demo Only)
+| Component | Technology |
+|-----------|------------|
+| **Encryption** | AES-256-GCM (data at rest) |
+| **Signatures** | RSA-SHA256 (prescription authenticity) |
+| **Database** | PostgreSQL (managed) |
+| **Backend** | Express.js + TypeScript |
+| **Frontend** | Next.js 16 + TypeScript |
 
-### Audit Integrity Fix Script
-We have included a script to manually recalculate and fix the cryptographic hash chain of the audit log. **This is included for demonstration purposes only** to show how the system can self-repair broken chains in a controlled environment.
+---
 
-**WARNING:** In a real production environment, a broken audit chain indicates a serious security breach. Using this script would "legitimize" potentially tampered data by updating the hashes to match the current (tampered) state.
+## 📁 Project Structure
 
-To run the script:
-```bash
-npx ts-node backend/scripts/fix_audit_integrity.ts
+```
+SplitRx/
+├── backend/         # Express.js API server
+│   ├── src/         # Source code
+│   └── scripts/     # Utility scripts
+├── frontend/        # Next.js application
+│   └── src/         # Source code
+├── database/        # SQL schema and migrations
+├── nginx/           # Reverse proxy configuration
+└── docker-compose.yml
 ```
 
-### Admin Password Reset (Demo/Recovery)
-For demonstration and emergency recovery purposes (admin memory aid), we have included a script to hard-reset the admin password to a known default value.
+---
 
-**NOTE:** This script is intentionally hardcoded with credentials for the demo environment. 
+## 📄 License
 
-To run the script:
-```bash
-npx ts-node backend/src/scripts/reset_admin_password_demo.ts
-```
+This project is proprietary software developed for secure medical prescription management.
+
+---
+
+*Built with ❤️ for healthcare security*

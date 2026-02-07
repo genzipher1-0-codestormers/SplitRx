@@ -1,10 +1,29 @@
+# === Backend .gitignore ===
 
-node_modules
-dist
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment & Secrets
 .env
+.env.*
+!.env.example
+ca-certificate.crt
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
 .DS_Store
-coverage
+
+# Logs
 *.log
-.vscode
-.idea
+
+# Testing
+coverage/
+
+# Sensitive scripts (if any)
 src/scripts/reset-admin-password.ts

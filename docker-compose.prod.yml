@@ -12,6 +12,9 @@ services:
       - .env
     volumes:
       - ./database:/app/database
+      - ./.env:/app/.env:ro
+    environment:
+      - ALLOWED_ORIGINS=https://splitrx.kvinda.qzz.io,http://localhost:3000
     working_dir: /app
 
   # Frontend Service (In production, usually built and served via Nginx, but here running as node server for simplicity)

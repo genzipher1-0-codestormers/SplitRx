@@ -577,4 +577,4 @@ export const SECURITY_CONFIG = {
 
 ---
 
-*This document was generated as part of the SplitRx security audit. Last updated: February 7, 2026*
+*This document was generated as part of the SplitRx security audit. Last updated: February 8, 2026*
