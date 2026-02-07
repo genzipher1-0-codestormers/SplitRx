@@ -5,127 +5,84 @@
 
 ## 🚀 Project Overview
 
-SplitRx is a secure, tamper-proof prescription management system designed to prevent medical identity theft, supply chain sabotage, and unauthorized data access. It serves three key roles:
-1.  **Doctors**: Issue digitally signed, encrypted prescriptions.
-2.  **Patients**: Manage their prescriptions, grant/revoke consent, and view their audit trail.
-3.  **Pharmacists**: Verify prescription integrity and dispense medication.
+**SplitRx** is a next-generation medical system designed to fix security holes in how prescriptions are handled today. It protects against identity theft, fake prescriptions, and data leaks.
+
+### How It Works (Simple Explanation)
+1.  **Doctors** write prescriptions that are digitally signed (like a secure digital wax seal).
+2.  **Patients** receive them instantly on their phone/dashboard.
+3.  **Pharmacists** scan a QR code to verify the "digital seal" hasn't been broken before giving out medicine.
+
+Everything is **Encrypted** (scrambled so hackers can't read it) and logged in an **Audit Trail** (a permanent history book that no one can erase).
 
 ---
 
-## 🛡️ Problem & Solution Mapping
-
-We address critical security flaws found in legacy systems (like the NeoMed breach) through a "Secure by Design" approach.
-
-| Problem Scenario | Vulnerability | SplitRx Solution |
-| :--- | :--- | :--- |
-| **#1 Data Breach** | Plaintext data storage allowed attackers to read all records once the perimeter was breached. | **AES-256-GCM Encryption**: Prescriptions are encrypted *before* storage. The database only holds ciphertext. Even if the DB is dumped, the data is unreadable. |
-| **#2 Identity Theft** | Forged prescriptions using stolen doctor credentials. | **RSA-SHA256 Digital Signatures**: Every prescription is signed by the doctor's private key. Pharmacists verify this signature before dispensing. |
-| **#3 Mutable Logs** | Attackers deleted logs to hide their tracks. | **Immutable Hash-Chained Audit Logs**: Every action is logged with a hash of the previous entry. Any deletion or modification breaks the chain, making tampering immediately detectable. |
-| **#5 Static Auth** | One-time login allowed session hijacking (e.g., Trump/LinkedIn hack). | **Adaptive Authentication**: We calculate a "Risk Score" on every login (based on IP, time, behavior). High-risk actions trigger step-up verification. |
-| **GDPR Compliance** | Users had no control over their data. | **Consent Management & Crypto-Shredding**: Patients explicitly grant/revoke access. "Right to Erasure" is implemented by destroying the encryption keys (crypto-shredding), making data permanently unrecoverable. |
+## ✨ Key Features
+-   **For Doctors**: Easy-to-use digital prescription pad.
+-   **For Patients**: Full control over your medical data. "Right to Erasure" button included.
+-   **For Pharmacists**: One-click verification to stop fraud.
+-   **For Admins**: 
+    -   **Audit Integrity Check**: Verify that the history logs haven't been hacked.
+    -   **Database Viewer**: View live system data directly from the dashboard.
 
 ---
 
-## 🛠️ Getting Started
+## 🛠️ How to Run This Project (Local Setup)
+
+This project has two parts: the **Backend** (Server) and the **Frontend** (User Interface). You will need to start both.
 
 ### Prerequisites
-- **Docker** & **Docker Compose** (Recommended)
-- **Node.js v20+** (If running locally without Docker)
+-   **Node.js** (Version 20 or higher) installed on your computer.
 
-### 1. Installation
-
-Clone the repository and set up environment variables.
-
-```bash
-git clone https://github.com/yourusername/splitrx.git
-cd splitrx
-```
-
-**Generate Secure Keys:**
-Run this command twice to generate random 64-character hex strings for your `.env` file:
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-**Create `.env` file (in `backend/`):**
-```env
-# Database
-DB_HOST=db
-DB_PORT=5432
-DB_NAME=splitrx
-DB_USER=splitrx_admin
-DB_PASSWORD=Summ3r!2025_Secur3
-
-# Secrets (Paste generated keys here)
-JWT_SECRET=<your_generated_key_1>
-ENCRYPTION_KEY=<your_generated_key_2>
-
-# App Config
-NODE_ENV=production
-ALLOWED_ORIGINS=http://localhost:3001,http://localhost:3000
-```
-
-### 2. Run with Docker (Recommended)
-
-This starts the Database, Backend (API), and Frontend (Next.js) in isolated containers.
-
-```bash
-docker-compose up --build
-```
-
-- **Frontend**: [http://localhost:3001](http://localhost:3001)
-- **Backend API**: [http://localhost:3000](http://localhost:3000)
-- **Database**: Port `5432`
-
----
-
-## 🧪 Running Locally (Development)
-
-If you prefer to run services individually:
-
-1.  **Start Database**:
+### Step 1: Install & Setup
+1.  **Download the code**:
     ```bash
-    docker-compose up -d db
+    git clone https://github.com/yourusername/splitrx.git
+    cd splitrx
     ```
-2.  **Start Backend**:
+
+2.  **Setup the Backend**:
     ```bash
     cd backend
     npm install
-    npm run dev
+    # Ensure your .env file is configured (ask admin for keys)
     ```
-3.  **Start Frontend**:
+
+3.  **Setup the Frontend**:
     ```bash
-    cd frontend
+    cd ../frontend
     npm install
-    npm run dev
+    # Ensure your .env.local file is configured
     ```
-    *Note: Ensure backend `.env` has `ALLOWED_ORIGINS` set to include your frontend URL.*
 
----
+### Step 2: Start the Application
+You need to open **two terminal windows**.
 
-## 🔧 Maintenance & Operations
-
-### Database Migrations
-The database schema is initialized automatically via `database/init.sql` on the first Docker run. To reset the database:
+**Terminal 1 (Backend):**
 ```bash
-docker-compose down -v
-docker-compose up --build
+cd backend
+npm run dev
+```
+*Wait until you see "SplitRx Server Running"*
+
+**Terminal 2 (Frontend):**
+```bash
+cd frontend
+npm run dev -- -p 3001
 ```
 
-### Key Rotation
-1.  Generate new `ENCRYPTION_KEY` and `JWT_SECRET`.
-2.  Update `backend/.env`.
-3.  **Warning**: comprehensive key rotation strategy for *existing* encrypted data (re-encryption) is planned for v2.0. Changing the key now will render existing prescriptions unreadable.
-
-### Troubleshooting "Connection Refused"
-- If the backend cannot connect to the DB, ensure the `DB_HOST` in `.env` matches the service name in `docker-compose.yml` (default: `db`) or `localhost` if running locally.
+### Step 3: Open in Browser
+-   **Frontend (App)**: Go to [http://localhost:3001](http://localhost:3001)
+-   **Backend (API)**: Running at [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 📚 Application Flow (How to Demo)
+## 📚 Documentation
+-   **[User Guide](USER_GUIDE.md)**: Detailed step-by-step instructions for Doctors, Patients, Pharmacists, and Admins.
 
-1.  **Register Users**: Create account for a Doctor, Patient, and Pharmacist.
-2.  **Doctor**: Log in and "Write Prescription" for the Patient (use their UUID).
-3.  **Patient**: Log in to see the prescription. Click "Generate QR".
-4.  **Pharmacist**: Log in, scan/paste the QR JSON. The system verifies the **Digital Signature** and **Content Hash**. If valid, the medication is dispensed.
-5.  **Audit**: Check the "Audit Trail" tab in the Patient dashboard to see the immutable log of these actions.
+---
+
+## 🔧 Technical Details (For Developers)
+-   **Encryption**: AES-256-GCM for data at rest.
+-   **Signatures**: RSA-SHA256 for prescription authenticity.
+-   **Database**: PostgreSQL (Managed).
+-   **Frameworks**: Express.js (Backend) and Next.js (Frontend).
