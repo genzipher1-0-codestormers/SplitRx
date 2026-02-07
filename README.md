@@ -86,3 +86,25 @@ npm run dev -- -p 3001
 -   **Signatures**: RSA-SHA256 for prescription authenticity.
 -   **Database**: PostgreSQL (Managed).
 -   **Frameworks**: Express.js (Backend) and Next.js (Frontend).
+
+## 🚨 Administrative Tools (For Demo Only)
+
+### Audit Integrity Fix Script
+We have included a script to manually recalculate and fix the cryptographic hash chain of the audit log. **This is included for demonstration purposes only** to show how the system can self-repair broken chains in a controlled environment.
+
+**WARNING:** In a real production environment, a broken audit chain indicates a serious security breach. Using this script would "legitimize" potentially tampered data by updating the hashes to match the current (tampered) state.
+
+To run the script:
+```bash
+npx ts-node backend/scripts/fix_audit_integrity.ts
+```
+
+### Admin Password Reset (Demo/Recovery)
+For demonstration and emergency recovery purposes (admin memory aid), we have included a script to hard-reset the admin password to a known default value.
+
+**NOTE:** This script is intentionally hardcoded with credentials for the demo environment. 
+
+To run the script:
+```bash
+npx ts-node backend/src/scripts/reset_admin_password_demo.ts
+```
