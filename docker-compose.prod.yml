@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: splitrx_backend
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./database:/app/database
+    working_dir: /app
+
+  # Frontend Service (In production, usually built and served via Nginx, but here running as node server for simplicity)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: splitrx_frontend
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - NEXT_PUBLIC_API_URL=https://splitrx.kvinda.qzz.io/api
+
+  # Nginx Reverse Proxy
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: splitrx_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+      - frontend

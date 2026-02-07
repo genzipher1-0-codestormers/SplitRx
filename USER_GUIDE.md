@@ -1,59 +1,94 @@
 
 # 📖 SplitRx User Manual
 
-Welcome to **SplitRx**, sending and receiving secure, tamper-proof prescriptions.
-This guide explains how to use the system for **Doctors**, **Patients**, and **Pharmacists**.
+Welcome to **SplitRx**, the secure way to manage medical prescriptions. 
+This guide is designed for everyone—Doctors, Patients, Pharmacists, and Administrators—to help you use the system easily and securely.
 
 ---
 
 ## 👨‍⚕️ For Doctors
-**Goal**: Create secure, digitally signed prescriptions.
+**Goal**: Create secure, digital prescriptions for your patients.
 
-1.  **Log In**: Use your credentials to access the Doctor Dashboard.
-2.  **Write a Prescription**:
-    - Click **"✍️ Write Prescription"**.
-    - **Patient ID**: Ask the patient for their **UUID** (found on their dashboard).
-    - **Diagnosis & Meds**: Enter the diagnosis and add medication details (Name, Dosage, Frequency).
-    - **Sign & Send**: Click **"Sign & Create Prescription"**.
-    - *Security*: The system automatically encrypts the data and attaches your unique digital signature.
+### How to Issue a Prescription
+1.  **Log In**: Enter your email and password to access the Doctor Dashboard.
+2.  **Start a Prescription**: Click the **"✍️ Write Prescription"** button.
+3.  **Identify the Patient**:
+    - Ask the patient for their **Patient ID** (a long code found on their dashboard).
+    - Enter this ID into the "Patient UUID" field.
+4.  **Enter Details**:
+    - Type the **Diagnosis** (e.g., "Seasonal Allergies").
+    - Add **Medications** by entering the Name, Dosage, and Frequency.
+5.  **Sign & Send**:
+    - Click **"Sign & Create Prescription"**.
+    - **Security Note**: The system automatically locks this prescription with your unique digital signature. It cannot be changed afterwards.
 
 ---
 
-## 🤧 For Patients
-**Goal**: Receive prescriptions, control access, and view your history.
+## 🙋‍♀️ For Patients
+**Goal**: Receive prescriptions, manage your data, and pick up medicine.
 
-1.  **Your Dashboard**:
-    - **Patient ID**: At the top, you will see your **UUID**. Share this *only* with your doctor so they can prescribe to you.
-2.  **View Prescriptions**:
-    - Go to the **"💊 Prescriptions"** tab to see your active medications.
-3.  **Pick Up Medication**:
-    - Click **"📱 Generate QR"** next to a prescription.
-    - Show this QR code to the pharmacist.
-    - *Note*: This QR code contains a secure cryptographic proof, verifying the prescription is yours.
-4.  **Audit Trail**:
-    - Go to the **"📋 Audit"** tab to see exactly who accessed your data and when. This log cannot be changed by anyone.
-5.  **Privacy Controls**:
-    - In the **"🔒 Privacy"** tab, you can use **"Erase All My Data"** to permanently delete your medical records from the system (Crypto-Shredding).
+### 1. Your Patient ID
+- At the top of your dashboard, you will see a code labeled **"Your Patient ID"**.
+- **Action**: Share this code *only* with your doctor so they can send prescriptions to you.
+
+### 2. Viewing Your Prescriptions
+- Click on the **"💊 Prescriptions"** tab.
+- Here you will see a list of all medications prescribed to you.
+
+### 3. Picking Up Medication
+- When you are at the pharmacy, click **"📱 Generate QR"** next to the prescription you need.
+- Show the QR code to the pharmacist.
+- **Note**: This code proves the prescription is yours and valid.
+
+### 4. Tracking Your Data (Audit Trail)
+- Click the **"📋 Audit"** tab.
+- This shows a permanent history of exactly who accessed your medical records and when.
+
+### 5. Privacy Controls
+- Click the **"🔒 Privacy"** tab.
+- **Right to Erasure**: You can click **"Erase All My Data"** to permanently delete your records from the system. This is irreversible.
 
 ---
 
 ## 💊 For Pharmacists
-**Goal**: Verify authenticity and dispense medication.
+**Goal**: Verify if a prescription is real and dispense medication.
 
-1.  **Verification**:
-    - Log in to the Pharmacist Dashboard.
-    - **Scan QR**: Use a scanner (or paste the text) of the Patient's QR code.
-2.  **Automatic Checks**:
-    - The system checks the **Doctor's Signature** (Is it real?).
-    - The system checks **Data Integrity** (Has it been changed?).
-3.  **Dispense**:
-    - If valid, you will see a green **"✅ VERIFIED"** badge.
-    - You can now safely dispense the medication.
-    - If invalid, you will see a red **"❌ WARNING"** alert. **Do not dispense.**
+### How to Verify & Dispense
+1.  **Log In**: Access the Pharmacist Dashboard.
+2.  **Scan the Code**:
+    - Ask the patient to show their QR code.
+    - Use your scanner (or manually paste the code) into the verification box.
+3.  **Automatic check**:
+    - The system will instantly check if the prescription is authentic.
+4.  **Result**:
+    - 🟢 **VERIFIED**: The prescription is real and safe to fill.
+    - 🔴 **WARNING**: The prescription is invalid or fake. **Do not dispense.**
 
 ---
 
-## 🆘 Troubleshooting
-- **"Invalid Signature"**: The prescription may have been tampered with or the doctor's key is invalid.
-- **"Prescription Expired"**: The validity period set by the doctor has passed.
-- **"Access Denied"**: Ensure you are logged in with the correct role for the action you are trying to perform.
+## 🛡️ For Administrators
+**Goal**: Monitor system health and data integrity.
+
+### 1. Audit Log Integrity
+- Go to the **"Audit Log Integrity"** tab.
+- Click **"Verify Audit Chain Integrity"**.
+- **What this does**: It checks millions of records to ensure no one (not even hackers) has tampered with or deleted past logs.
+- You should see a green **"✅ Integrity Verified"** message.
+
+### 2. Database Viewer
+- Go to the **"Database Viewer"** tab.
+- This allows you to inspect the raw data stored in the system.
+- Select a table from the list (e.g., `users`, `prescriptions`) to view the current records.
+
+---
+
+## ❓ Frequently Asked Questions
+
+**Q: I forgot my password, what do I do?**
+A: Currently, please contact the system administrator to reset your account.
+
+**Q: Why do I see a "Connection Refused" error?**
+A: This usually means the server is down or you are having internet issues. Please check your connection and try again.
+
+**Q: Can I delete a prescription?**
+A: No. Once a prescription is written, it is part of the permanent medical record. However, patients can choose to delete *all* their data via the Privacy tab.

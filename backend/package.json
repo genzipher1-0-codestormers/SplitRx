@@ -10,13 +10,15 @@
     "dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "seed:admin": "ts-node src/scripts/admin.seed.ts"
+    "seed:admin": "ts-node src/scripts/admin.seed.ts",
+    "db:init": "ts-node src/scripts/init-db.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "axios": "^1.13.4",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
