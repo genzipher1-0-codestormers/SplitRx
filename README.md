@@ -116,6 +116,20 @@ docker exec -it splitrx_backend npx ts-node scripts/fix_audit_integrity.ts
 
 > **Note:** In a real production environment, this capability would be restricted. It is included here for demonstration purposes to show how the system can self-repair broken chains in a controlled environment.
 
+### Create Admin Account
+To create a new administrator account (if none exists), run the following command in the backend container or directory:
+
+```bash
+# Set credentials and run seed script
+export ADMIN_EMAIL="admin@example.com"
+export ADMIN_PASSWORD="secure_password123"
+docker exec -it splitrx_backend npx ts-node src/scripts/admin.seed.ts
+# OR locally:
+# ADMIN_EMAIL="admin@example.com" ADMIN_PASSWORD="secure_password123" npx ts-node src/scripts/admin.seed.ts
+```
+
+> **Note:** The script will skip creation if an administrator account already exists.
+
 ---
 
 ## 📁 Project Structure
