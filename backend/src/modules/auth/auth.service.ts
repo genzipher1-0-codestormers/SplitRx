@@ -149,37 +149,6 @@ class AuthService {
             throw new Error('Invalid credentials');
         }
 
-        // Check if user has keys (might be missing after password reset)
-        if (!user.public_key || !user.private_key_encrypted) {
-            // Generate new RSA key pair
-            const { publicKey, privateKey } = SigningService.generateKeyPair();
-
-            // Encrypt private key with user's NEW password (the one they just logged in with)
-            const { encryptionService } = require('../../crypto/encryption');
-            const encryptedPrivateKey = encryptionService.encrypt(privateKey);
-
-            // Update user record
-            await pool.query(
-                `UPDATE users SET 
-                    public_key = $1, 
-                    private_key_encrypted = $2,
-                    updated_at = NOW()
-                 WHERE id = $3`,
-                [publicKey, JSON.stringify(encryptedPrivateKey), user.id]
-            );
-
-            await auditService.log({
-                actorId: user.id,
-                actorRole: user.role,
-                action: 'KEYS_REGENERATED',
-                resourceType: 'user',
-                resourceId: user.id,
-                metadata: { reason: 'Missing keys (likely after password reset)' },
-                ipAddress,
-                userAgent,
-            });
-        }
-
         // Reset failed attempts on success
         await pool.query(
             `UPDATE users SET failed_login_attempts = 0, locked_until = NULL, 

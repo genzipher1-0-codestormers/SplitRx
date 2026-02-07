@@ -28,7 +28,6 @@ ssh $REMOTE_HOST << 'EOF'
         echo "   Running backup..."
         if [ -f "app/.env" ]; then
             cp app/.env .env.bak
-            chmod 600 .env.bak
             echo "   ✅ .env backed up."
         else
             echo "   ⚠️ No .env file found in existing deployment."
@@ -56,10 +55,6 @@ ssh $REMOTE_HOST << 'EOF'
         echo "   ✅ .env restored."
     else
         echo "   ⚠️ No environment backup found. You may need to create app/.env manually."
-    fi
-
-    if [ -f "app/.env" ]; then
-        chmod 600 app/.env
     fi
 
     # Start services
