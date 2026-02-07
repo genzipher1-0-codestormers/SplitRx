@@ -37,7 +37,7 @@ export default function DashboardPage() {
                 {user.role === 'pharmacist' && <PharmacistDashboard />}
 
                 {/* Fallback for unknown roles */}
-                {!['doctor', 'patient', 'pharmacist'].includes(user.role) && (
+                {!['doctor', 'patient', 'pharmacist', 'admin'].includes(user.role) && (
                     <div className="panel p-8 text-center rounded-2xl animate-fade-in">
                         <div className="flex justify-center mb-4">
                             <div className="p-4 rounded-2xl bg-[#2a0f1b] border border-[#5a1c2b]">

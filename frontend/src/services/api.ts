@@ -32,7 +32,6 @@ api.interceptors.response.use(
                 originalRequest.url?.includes('/auth/register')) {
                 return Promise.reject(error);
             }
-
             if (error.response?.status === 401) {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('user');
@@ -49,7 +48,6 @@ api.interceptors.response.use(
 
         return Promise.reject(error);
     }
-
 );
 
 // Auth endpoints
@@ -77,7 +75,8 @@ export const consentAPI = {
     grant: (data: any) => api.post('/consent', data),
     getMyConsents: () => api.get('/consent/my'),
     revoke: (id: string) => api.delete(`/consent/${id}`),
-    eraseAllData: () => api.delete('/consent/erasure/all')
+    eraseAllData: () => api.post('/consent/delete-my-data'),
+    exportMyData: () => api.get('/consent/export-my-data')
 };
 
 // Audit endpoints

@@ -27,13 +27,25 @@ class AuditService {
      * Append an entry to the immutable audit log
      * Each entry is hash-chained to the previous one
      */
-    async log(entry: AuditLogEntry): Promise<void> {
-        const client = await pool.connect();
+    /**
+     * Append an entry to the immutable audit log
+     * Each entry is hash-chained to the previous one
+     * @param client Optional database client for transactional integrity
+     */
+    async log(entry: AuditLogEntry, client?: any): Promise<void> {
+        // Use provided client or get a new one from the pool
+        const dbClient = client || await pool.connect();
+        const isExternalTransaction = !!client;
+
         try {
-            await client.query('BEGIN');
+            if (!isExternalTransaction) {
+                await dbClient.query('BEGIN');
+                // Lock the table to prevent concurrent inserts from creating race conditions
+                await dbClient.query('LOCK TABLE audit_log IN SHARE ROW EXCLUSIVE MODE');
+            }
 
             // Get the hash of the last entry
-            const lastEntry = await client.query(
+            const lastEntry = await dbClient.query(
                 'SELECT entry_hash FROM audit_log ORDER BY timestamp DESC LIMIT 1'
             );
             const previousHash = lastEntry.rows[0]?.entry_hash || '0'.repeat(64);
@@ -60,7 +72,7 @@ class AuditService {
                 .digest('hex');
 
             // INSERT only — triggers prevent UPDATE/DELETE
-            await client.query(
+            await dbClient.query(
                 `INSERT INTO audit_log 
                  (id, actor_id, actor_role, action, resource_type, resource_id, 
                   resource_owner_id, metadata, ip_address, user_agent, 
@@ -83,14 +95,22 @@ class AuditService {
                 ]
             );
 
-            await client.query('COMMIT');
+            if (!isExternalTransaction) {
+                await dbClient.query('COMMIT');
+            }
         } catch (error) {
-            await client.query('ROLLBACK');
+            if (!isExternalTransaction) {
+                await dbClient.query('ROLLBACK');
+            }
             console.error('Audit log error:', error);
             // Audit failures should never crash the app
             // but should be reported to monitoring
+            // If external transaction, we let the caller handle the error (or we could rethrow so they rollback)
+            if (isExternalTransaction) throw error;
         } finally {
-            client.release();
+            if (!isExternalTransaction) {
+                dbClient.release();
+            }
         }
     }
 
@@ -170,16 +190,32 @@ class AuditService {
 
     /**
      * Get audit logs for a specific user (GDPR Art. 15 - Right of Access)
+     * Only shows logs from after the user's most recent registration/reactivation
+     * to provide a "fresh start" experience after erasure and re-registration.
      */
     async getLogsForUser(userId: string): Promise<any[]> {
+        // Find the timestamp of the user's most recent registration or reactivation
+        const lastActivationResult = await pool.query(
+            `SELECT timestamp FROM audit_log 
+             WHERE resource_id = $1 
+               AND action IN ('USER_REGISTERED', 'USER_REACTIVATED')
+             ORDER BY timestamp DESC 
+             LIMIT 1`,
+            [userId]
+        );
+
+        const lastActivationTime = lastActivationResult.rows[0]?.timestamp || new Date(0);
+
+        // Only return logs from after the last activation
         const result = await pool.query(
             `SELECT id, action, resource_type, resource_id, resource_owner_id,
                     metadata, timestamp, entry_hash
              FROM audit_log 
              WHERE resource_owner_id = $1 
+               AND timestamp >= $2
              ORDER BY timestamp DESC
              LIMIT 100`,
-            [userId]
+            [userId, lastActivationTime]
         );
         return result.rows;
     }

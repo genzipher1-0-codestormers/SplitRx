@@ -2,8 +2,6 @@
 import { Router } from 'express';
 import { authenticate, authorize, AuthenticatedRequest } from '../../middleware/auth';
 import pool from '../../config/database';
-
-
 import { HashingService } from '../../crypto/hashing';
 
 const router = Router();
@@ -60,7 +58,6 @@ router.post(
         }
     }
 );
-
 // Get list of tables (admin only)
 router.get(
     '/tables',

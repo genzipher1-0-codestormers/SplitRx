@@ -24,6 +24,9 @@ services:
       - db
     env_file:
       - ./backend/.env
+    environment:
+      # Override DB_HOST for internal docker network
+      - DB_HOST=db
     ports:
       - "${PORT:-3000}:3000"
     volumes:

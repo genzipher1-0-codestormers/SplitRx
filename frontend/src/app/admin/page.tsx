@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import api from '@/services/api';
+import toast from 'react-hot-toast';
 
 // --- Database Viewer Component ---
 function DatabaseViewer() {
@@ -131,7 +132,6 @@ function DatabaseViewer() {
 }
 
 // --- User Management Component ---
-import toast from 'react-hot-toast';
 
 function UserManagement() {
     const [users, setUsers] = useState<any[]>([]);
@@ -372,6 +372,7 @@ function UserManagement() {
     );
 }
 
+>>>>>>> af2692a3ac99a705210ef337b83ae15aedbe767b
 // --- Main Admin Dashboard ---
 export default function AdminDashboard() {
     const { user, loading } = useAuth();
@@ -520,4 +521,3 @@ export default function AdminDashboard() {
         </div>
     );
 }
-

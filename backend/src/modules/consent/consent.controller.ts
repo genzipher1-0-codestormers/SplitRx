@@ -48,4 +48,13 @@ export class ConsentController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async exportMyData(req: AuthenticatedRequest, res: Response) {
+        try {
+            const data = await consentService.exportMyData(req.user!.id);
+            res.json(data);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
