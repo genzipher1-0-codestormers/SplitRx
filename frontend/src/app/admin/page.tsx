@@ -372,7 +372,6 @@ function UserManagement() {
     );
 }
 
->>>>>>> af2692a3ac99a705210ef337b83ae15aedbe767b
 // --- Main Admin Dashboard ---
 export default function AdminDashboard() {
     const { user, loading } = useAuth();
