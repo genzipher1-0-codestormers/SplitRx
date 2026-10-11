@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react';
 import { prescriptionAPI, consentAPI, auditAPI } from '@/services/api';
-import { QRCodeSVG } from 'qrcode.react';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 
